@@ -1,0 +1,61 @@
+@import 'nib';
+
+global-reset();
+
+@import './mixins';
+@import './fonts';
+@import './colors';
+@import './dialog';
+
+html {
+	height: 100%;
+	overflow: hidden;
+	font-family: 'Roboto';
+
+	+desktop() {
+		font-size: 16px;
+	}
+
+	+mobile() {
+		font-size: 12px;
+	}
+}
+
+body {
+	height: 100%;
+	background: none;
+
+* {
+	box-sizing: border-box;
+	outline: none;
+}
+
+#new-tryit-jssip-container {
+	height: 100%;
+	width: 100%;
+
+	// Components
+	@import './components/Logo';
+	@import './components/App';
+	@import './components/Login';
+	@import './components/Phone';
+}
+
+// Hack to detect in JS the current media query
+#new-tryit-jssip-media-query-detector {
+	position: relative;
+	z-index: -1000;
+	bottom: 0;
+	left: 0;
+	height: 1px;
+	width: 1px;
+
+	// In desktop let it "visible" so elem.offsetParent returns the parent element
+	+desktop() {}
+
+	// In mobile ensure it's not displayed so elem.offsetParent returns null
+	+mobile() {
+		display: none;
+		position: fixed;  // Required for old IE
+	}
+}

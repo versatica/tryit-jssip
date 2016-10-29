@@ -1,0 +1,45 @@
+<!doctype html>
+
+<html>
+	<head>
+		<title>new tryit-jssip</title>
+		<meta charset='UTF-8'>
+		<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'>
+
+		<style>
+			html {
+				height: 100%;
+				overflow: hidden;
+				background-image: url('/resources/images/body-bg.jpg');
+				background-position: center;
+				background-size: cover;
+				background-repeat: no-repeat;
+			}
+		</style>
+		<link rel='stylesheet' href='/new-tryit-jssip.css'>
+
+		<script>
+			window.localStorage.setItem('debug', '* -engine* -socket* -JsSIP* *ERROR* *WARN*');
+		</script>
+
+		<script src='resources/js/antiglobal.js'></script>
+		<script>
+			if (window.antiglobal)
+			{
+				setTimeout(function()
+				{
+					window.antiglobal('start2chat', '___browserSync___oldSocketIo', 'io', '___browserSync___', '__core-js_shared__');
+
+					setInterval(window.antiglobal, 5000);
+				}, 1000);
+			}
+		</script>
+
+		<script async type='text/javascript' src='/new-tryit-jssip.js'></script>
+	</head>
+
+	<body>
+		<div id='new-tryit-jssip-container'></div>
+		<div id='new-tryit-jssip-media-query-detector'></div>
+	</body>
+</html>

@@ -1,0 +1,35 @@
+[data-component='Room'] {
+	position: relative;
+	height: 100%;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	overflow: hidden;
+
+	TransitionAppear(2s);
+
+	> .logo-container {
+		position: absolute;
+		z-index: 10;
+		left: 0;
+		top: 0;
+		margin: 20px;
+	}
+
+	> .menu-container {
+		position: absolute;
+		z-index: 10;
+		right: 0;
+		top: 0;
+
+		+desktop() {
+			margin: 20px;
+		}
+
+		+mobile() {
+			margin: 10px;
+		}
+	}
+}

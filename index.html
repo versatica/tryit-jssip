@@ -10,10 +10,11 @@
 			html {
 				height: 100%;
 				overflow: hidden;
-				background-image: url('/resources/images/body-bg.jpg');
-				background-position: center;
-				background-size: cover;
-				background-repeat: no-repeat;
+				/*background-image: url('/resources/images/body-bg.jpg');*/
+				/*background-position: center;*/
+				/*background-size: cover;*/
+				/*background-repeat: no-repeat;*/
+				background-color: #444;
 			}
 		</style>
 		<link rel='stylesheet' href='/new-tryit-jssip.css'>
@@ -28,7 +29,7 @@
 			{
 				setTimeout(function()
 				{
-					window.antiglobal('start2chat', '___browserSync___oldSocketIo', 'io', '___browserSync___', '__core-js_shared__');
+					window.antiglobal('___browserSync___oldSocketIo', 'JSON3', 'io', '___browserSync___', '__core-js_shared__');
 
 					setInterval(window.antiglobal, 5000);
 				}, 1000);

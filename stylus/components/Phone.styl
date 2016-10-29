@@ -1,35 +1,26 @@
-[data-component='Room'] {
+[data-component='Phone'] {
 	position: relative;
 	height: 100%;
 	width: 100%;
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
-	align-items: center;
 	overflow: hidden;
 
-	TransitionAppear(2s);
+	TransitionAppear(1s);
 
-	> .logo-container {
-		position: absolute;
-		z-index: 10;
-		left: 0;
-		top: 0;
-		margin: 20px;
-	}
+	> header {
+		flex: 0 0 auto;
+		width: 100%;
+		box-shadow: 0px 0px 15px 0px rgba(#000, 0.9);
 
-	> .menu-container {
-		position: absolute;
-		z-index: 10;
-		right: 0;
-		top: 0;
-
-		+desktop() {
-			margin: 20px;
-		}
-
-		+mobile() {
-			margin: 10px;
+		> .topbar {
+			padding: 10px 20px;
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: space-between;
+			background-color: #000;
+			color: #fff;
 		}
 	}
 }

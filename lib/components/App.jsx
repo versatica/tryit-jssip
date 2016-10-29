@@ -3,6 +3,7 @@
 import React from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Logger from '../Logger';
+import storage from '../storage';
 import muiTheme from './muiTheme';
 import Snackbar from 'material-ui/Snackbar';
 import Notifier from './Notifier';
@@ -57,7 +58,7 @@ export default class App extends React.Component
 						onHideNotification={this.handleHideNotification.bind(this)}
 						onShowSnackbar={this.handleShowSnackbar.bind(this)}
 						onHideSnackbar={this.handleHideSnackbar.bind(this)}
-						onExit={this.handleRoomExit.bind(this)}
+						onLogout={this.handleLogout.bind(this)}
 					/>;
 
 				break;
@@ -84,13 +85,11 @@ export default class App extends React.Component
 
 	componentDidMount()
 	{
-		// Set flag
 		this._mounted = true;
 	}
 
 	componentWillUnmount()
 	{
-		// Unset flag
 		this._mounted = false;
 	}
 
@@ -140,18 +139,20 @@ export default class App extends React.Component
 	{
 		logger.debug('handleLogin() [user:%o]', user);
 
-		// Go to room
+		// Go to phone
 		this.setState(
 			{
-				step         : 'room',
+				step         : 'phone',
 				me           : user,
 				showSnackbar : false
 			});
 	}
 
-	handleRoomExit()
+	handleLogout()
 	{
-		logger.debug('handleRoomExit()');
+		logger.debug('handleLogout()');
+
+		storage.clear();
 
 		// Go to login
 		this.setState(

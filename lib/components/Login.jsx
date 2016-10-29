@@ -23,6 +23,7 @@ export default class Login extends React.Component
 
 		this.state =
 		{
+			user      : user,
 			id        : user ? user.id : null,
 			name      : user ? user.name : '',
 			stream    : null,
@@ -47,7 +48,7 @@ export default class Login extends React.Component
 						/>
 					</div>
 
-					<div className='main-container'>
+					<form action='' onSubmit={this.handleSubmit.bind(this)}>
 						<div className='form-container'>
 							<TextField
 								floatingLabelText='Your Name'
@@ -58,7 +59,7 @@ export default class Login extends React.Component
 							/>
 							<FlatButton
 								label='Reset'
-								secondary
+								primary
 								style={{
 									display : 'table',
 									margin  : '20px auto 0 auto'
@@ -66,17 +67,25 @@ export default class Login extends React.Component
 								onClick={this.handleClickReset.bind(this)}
 							/>
 						</div>
-					</div>
+					</form>
 
-					<div className='play-container'>
+					<div className='submit-container'>
 						<div
-							className={classnames('play-button', { disabled: !this._checkCanPlay() })}
-							onClick={this.handleClickPlay.bind(this)}
+							className={classnames('submit-button', { disabled: !this._checkCanPlay() })}
+							onClick={this.handleSubmitClick.bind(this)}
 						/>
 					</div>
 				</div>
 			</TransitionAppear>
 		);
+	}
+
+	componentWillMount()
+	{
+		let user = this.state.user;
+
+		if (user)
+			this.props.onLogin(user);
 	}
 
 	handleChangeName(event)
@@ -100,9 +109,39 @@ export default class Login extends React.Component
 		storage.clear();
 	}
 
-	handleClickPlay()
+	handleSubmit(event)
 	{
-		logger.debug('handleClickPlay()');
+		logger.debug('handleSubmit()');
+
+		event.preventDefault();
+
+		this._checkForm();
+	}
+
+	handleSubmitClick()
+	{
+		logger.debug('handleSubmitClick()');
+
+		this._checkForm();
+	}
+
+	_checkCanPlay()
+	{
+		let state = this.state;
+
+		return state.name;
+	}
+
+	_createUserId(name)
+	{
+		logger.debug('_createUserId() [name:"%s"]', name);
+
+		return encodeURI(`${name.toLowerCase().replace(/[\t\s\\]/g, '_')}_${randomString({ length: 6 })}`);
+	}
+
+	_checkForm()
+	{
+		logger.debug('_checkForm()');
 
 		let state = this.state;
 		let errors = state.errors;
@@ -135,20 +174,6 @@ export default class Login extends React.Component
 
 		// Fire event
 		this.props.onLogin(user);
-	}
-
-	_checkCanPlay()
-	{
-		let state = this.state;
-
-		return state.name;
-	}
-
-	_createUserId(name)
-	{
-		logger.debug('_createUserId() [name:"%s"]', name);
-
-		return `${name.toLowerCase().replace(/[\t\s\\]/g, '')}_${randomString({ length: 6 })}`;
 	}
 }
 

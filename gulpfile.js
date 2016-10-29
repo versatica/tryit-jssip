@@ -307,17 +307,13 @@ gulp.task('bundle:watch', () =>
 
 gulp.task('openbrowser', (done) =>
 {
-	const config = require('../server/config');
-
 	browserSync(
 		{
-			open      : 'external',
-			host      : config.domain,
 			server    :
 			{
 				baseDir : OUTPUT_DIR
 			},
-			https     : config.tls,
+			https     : false,
 			ghostMode : false,
 			files     : path.join(OUTPUT_DIR, '**', '*')
 		});

@@ -133,7 +133,7 @@ export default class Login extends React.Component
 
 	_createUserId(name)
 	{
-		return encodeURI(`${name.toLowerCase().replace(/[\t\s\\]/g, '_')}_${randomString({ length: 6 })}`);
+		return `${name.toLowerCase().replace(/[^a-zA-Z0-9]/g, '')}_${randomString({ length: 6 })}`;
 	}
 
 	_checkForm()

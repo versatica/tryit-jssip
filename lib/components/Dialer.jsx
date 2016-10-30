@@ -5,8 +5,8 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import Chip from 'material-ui/Chip';
 import Avatar from 'material-ui/Avatar';
+import classnames from 'classnames';
 import Logger from '../Logger';
-import User from '../User';
 
 const logger = new Logger('Dialer');
 
@@ -18,7 +18,6 @@ export default class Dialer extends React.Component
 
 		this.state =
 		{
-			me  : props.me,
 			uri : ''
 		};
 	}
@@ -26,7 +25,7 @@ export default class Dialer extends React.Component
 	render()
 	{
 		let state = this.state;
-		let statusColor = '#47d41c';
+		let props = this.props;
 
 		return (
 			<div data-component='Dialer'>
@@ -34,17 +33,22 @@ export default class Dialer extends React.Component
 
 					<Chip>
 						<Avatar
-							backgroundColor={statusColor}
+							className={classnames('status', props.status)}
 						/>
 						Iñaki Baz <span className='uri'>&lt;sip:ibc@aliax.net&gt;</span>
 					</Chip>
 				</div>
 
-				<form className='uri-form' action='' onSubmit={this.handleSubmit.bind(this)}>
+				<form
+					className='uri-form'
+					action=''
+					onSubmit={this.handleSubmit.bind(this)}
+				>
 					<div className='uri-container'>
 						<TextField
 							hintText='SIP URI or username'
 							fullWidth
+							disabled={!this._canCall()}
 							value={state.uri}
 							onChange={this.handleUriChange.bind(this)}
 						/>
@@ -53,6 +57,7 @@ export default class Dialer extends React.Component
 					<RaisedButton
 						label='Call'
 						primary
+						disabled={!this._canCall() || !state.uri}
 						onClick={this.handleClickCall.bind(this)}
 					/>
 				</form>
@@ -62,9 +67,7 @@ export default class Dialer extends React.Component
 
 	handleUriChange(event)
 	{
-		let uri = event.target.value;
-
-		this.setState({ uri });
+		this.setState({ uri: event.target.value });
 	}
 
 	handleSubmit(event)
@@ -72,6 +75,10 @@ export default class Dialer extends React.Component
 		logger.debug('handleSubmit()');
 
 		event.preventDefault();
+
+		if (!this._canCall() || !this.state.uri)
+			return;
+
 		this._doCall();
 	}
 
@@ -87,10 +94,25 @@ export default class Dialer extends React.Component
 		let uri = this.state.uri;
 
 		logger.debug('_doCall() [uri:"%s"]', uri);
+
+		this.setState({ uri: '' });
+		this.props.onCall(uri);
+	}
+
+	_canCall()
+	{
+		let props = this.props;
+
+		return (
+			!props.busy &&
+			(props.status === 'connected' || props.status === 'registered')
+		);
 	}
 }
 
 Dialer.propTypes =
 {
-	me : React.PropTypes.instanceOf(User).isRequired
+	status : React.PropTypes.string.isRequired,
+	busy   : React.PropTypes.bool.isRequired,
+	onCall : React.PropTypes.func.isRequired
 };

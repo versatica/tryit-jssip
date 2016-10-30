@@ -113,27 +113,27 @@ export default class Notifier extends React.Component
 			case 'info' :
 				data2 = Object.assign(
 					{
-						position    : 'tr',
+						position    : 'br',
 						dismissible : true,
-						autoDismiss : 3
+						autoDismiss : 2
 					}, data);
 				break;
 
 			case 'success' :
 				data2 = Object.assign(
 					{
-						position    : 'tr',
+						position    : 'br',
 						dismissible : true,
-						autoDismiss : 5
+						autoDismiss : 2
 					}, data);
 				break;
 
 			case 'error' :
 				data2 = Object.assign(
 					{
-						position    : 'tr',
+						position    : 'br',
 						dismissible : true,
-						autoDismiss : 5
+						autoDismiss : 2
 					}, data);
 				break;
 

@@ -1,5 +1,4 @@
 [data-component='Dialer'] {
-	padding: 20px;
 	background-color: #eee;
 
 	+desktop() {
@@ -7,6 +6,11 @@
 		flex-direction: row;
 		align-items: center;
 		justify-content: space-around;
+		padding: 10px;
+	}
+
+	+mobile() {
+		padding: 20px;
 	}
 
 	> .status-bar {
@@ -17,6 +21,25 @@
 
 		+mobile() {
 			margin-bottom: 20px;
+		}
+
+		.status {
+			&.disconnected {
+				background-color: #ccc !important;
+			}
+
+			&.connecting {
+				background-color: #d4d01c !important;
+				animation: status-connecting 1s infinite ease-in;
+			}
+
+			&.connected {
+				background-color: #d4d01c !important ;
+			}
+
+			&.registered {
+				background-color: #47d41c !important;
+			}
 		}
 
 		.uri {
@@ -39,5 +62,11 @@
 				max-width: 400px;
 			}
 		}
+	}
+}
+
+@keyframes status-connecting {
+	50% {
+		opacity: 0.25;
 	}
 }

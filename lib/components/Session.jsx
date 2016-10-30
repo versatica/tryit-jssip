@@ -16,12 +16,15 @@ export default class Session extends React.Component
 
 		this.state =
 		{
+			localHasVideo  : false,
 			remoteHasVideo : false,
 			localHold      : false,
 			remoteHold     : false,
 			canHold        : false
 		};
 
+		// Mounted flag
+		this._mounted = false;
 		// Local cloned stream
 		this._localClonedStream = null;
 	}
@@ -46,7 +49,12 @@ export default class Session extends React.Component
 		return (
 			<TransitionAppear duration={1000}>
 				<div data-component='Session'>
-					<video ref='localVideo' className='local-video' autoPlay muted/>
+					<video
+						ref='localVideo'
+						className={classnames('local-video', { hidden: !state.localHasVideo })}
+						autoPlay
+						muted
+					/>
 
 					<video
 						ref='remoteVideo'
@@ -88,24 +96,46 @@ export default class Session extends React.Component
 
 	componentDidMount()
 	{
+		this._mounted = true;
+
 		let localVideo = this.refs.localVideo;
 		let session = this.props.session;
 		let peerconnection = session.connection;
 		let localStream = peerconnection.getLocalStreams()[0];
 		let remoteStream = peerconnection.getRemoteStreams()[0];
 
-		// Clone local stream
-		this._localClonedStream = localStream.clone();
+		// Handle local stream
+		if (localStream)
+		{
+			// Clone local stream
+			this._localClonedStream = localStream.clone();
 
-		// Display local video
-		localVideo.srcObject = this._localClonedStream;
+			// Display local video
+			localVideo.srcObject = this._localClonedStream;
+
+			setTimeout(() =>
+			{
+				if (!this._mounted)
+					return;
+
+				this.setState({ localHasVideo: true });
+			}, 1000);
+		}
 
 		// If incoming all we already have the remote stream
 		if (remoteStream)
 			this._handleRemoteStream(remoteStream);
 
 		if (session.isEstablished())
-			setTimeout(() => this.setState({ canHold: true }));
+		{
+			setTimeout(() =>
+			{
+				if (!this._mounted)
+					return;
+
+				this.setState({ canHold: true });
+			});
+		}
 
 		session.on('accepted', (data) =>
 		{
@@ -191,6 +221,7 @@ export default class Session extends React.Component
 
 	componentWillUnmount()
 	{
+		this._mounted = false;
 		JsSIP.Utils.closeMediaStream(this._localClonedStream);
 	}
 

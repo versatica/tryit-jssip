@@ -40,7 +40,7 @@ export default class Dialer extends React.Component
 				</div>
 
 				<form
-					className='uri-form'
+					className={classnames('uri-form', { hidden: props.busy })}
 					action=''
 					onSubmit={this.handleSubmit.bind(this)}
 				>

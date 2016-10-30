@@ -16,6 +16,13 @@
 		transform: scaleX(-1);
 		border: 1px solid rgba(#fff, 0.15);
 		box-shadow: 0px 0px 15px 0px rgba(#000, 0.9);
+		transition-property: opacity z-index;
+		transition-duration: 0.5s;
+
+		&.hidden {
+			z-index: -1 !important;
+			opacity: 0;
+		}
 	}
 
 	> video.remote-video {

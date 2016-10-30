@@ -1,6 +1,8 @@
 'use strict';
 
 import React from 'react';
+import classnames from 'classnames';
+import JsSIP from 'jssip';
 import Logger from '../Logger';
 import TransitionAppear from './TransitionAppear';
 
@@ -12,16 +14,58 @@ export default class Session extends React.Component
 	{
 		super(props);
 
-		this.state = {};
+		this.state =
+		{
+			remoteHasVideo : false,
+			localHold      : false,
+			remoteHold     : false
+		};
+
+		// Local cloned stream
+		this._localClonedStream = null;
 	}
 
 	render()
 	{
+		let state = this.state;
+		let noRemoteVideo;
+
+		if (state.localHold && state.remoteHold)
+			noRemoteVideo = <div className='message both-hold'>both hold</div>;
+		else if (state.localHold)
+			noRemoteVideo = <div className='message local-hold'>local hold</div>;
+		else if (state.remoteHold)
+			noRemoteVideo = <div className='message remote-hold'>remote hold</div>;
+		else if (!state.remoteHasVideo)
+			noRemoteVideo = <div className='message no-remote-video'>no remote video</div>;
+
 		return (
 			<TransitionAppear duration={1000}>
 				<div data-component='Session'>
-					<video ref='remoteVideo' className='remote-video' autoPlay/>
 					<video ref='localVideo' className='local-video' autoPlay muted/>
+
+					<video
+						ref='remoteVideo'
+						className={classnames('remote-video', { hidden: noRemoteVideo })}
+						autoPlay
+					/>
+
+					{noRemoteVideo ?
+						<div className='no-remote-video-info'>
+							{noRemoteVideo}
+						</div>
+					:
+						null
+					}
+
+					<div className='controls-container'>
+						<div className='controls'>
+							<div
+								className='control hang-up'
+								onClick={this.handleHangUp.bind(this)}
+							/>
+						</div>
+					</div>
 				</div>
 			</TransitionAppear>
 		);
@@ -35,8 +79,11 @@ export default class Session extends React.Component
 		let peerconnection = session.connection;
 		let localStream = peerconnection.getLocalStreams()[0];
 
+		// Clone local stream
+		this._localClonedStream = localStream.clone();
+
 		// Display local video
-		localVideo.srcObject = localStream;
+		localVideo.srcObject = this._localClonedStream;
 
 		session.on('accepted', (data) =>
 		{
@@ -76,6 +123,40 @@ export default class Session extends React.Component
 				});
 		});
 
+		session.on('hold', (data) =>
+		{
+			let originator = data.originator;
+
+			logger.debug('session "hold" event [originator:%s]', originator);
+
+			switch (originator)
+			{
+				case 'local':
+					this.setState({ localHold: true });
+					break;
+				case 'remote':
+					this.setState({ remoteHold: true });
+					break;
+			}
+		});
+
+		session.on('unhold', (data) =>
+		{
+			let originator = data.originator;
+
+			logger.debug('session "unhold" event [originator:%s]', originator);
+
+			switch (originator)
+			{
+				case 'local':
+					this.setState({ localHold: false });
+					break;
+				case 'remote':
+					this.setState({ remoteHold: false });
+					break;
+			}
+		});
+
 		peerconnection.addEventListener('addstream', (event) =>
 		{
 			logger.debug('peerconnection "addstream" event');
@@ -85,7 +166,7 @@ export default class Session extends React.Component
 			// Display remote video
 			remoteVideo.srcObject = stream;
 
-			// Set stream events
+			this._checkRemoteVideo(stream);
 
 			stream.addEventListener('addtrack', () =>
 			{
@@ -96,6 +177,8 @@ export default class Session extends React.Component
 
 				// Refresh remote video
 				remoteVideo.srcObject = stream;
+
+				this._checkRemoteVideo(stream);
 			});
 
 			stream.addEventListener('removetrack', () =>
@@ -107,8 +190,31 @@ export default class Session extends React.Component
 
 				// Refresh remote video
 				remoteVideo.srcObject = stream;
+
+				this._checkRemoteVideo(stream);
 			});
 		});
+	}
+
+	componentWillUnmount()
+	{
+		JsSIP.Utils.closeMediaStream(this._localClonedStream);
+	}
+
+	handleHangUp()
+	{
+		logger.debug('handleHangUp()');
+
+		this.props.session.terminate();
+	}
+
+	_checkRemoteVideo(stream)
+	{
+		let videoTrack = stream.getVideoTracks()[0];
+
+		logger.debug('_checkRemoteVideo() [stream:%o, videoTrack:%o]', stream, videoTrack);
+
+		this.setState({ remoteHasVideo: !!videoTrack });
 	}
 }
 

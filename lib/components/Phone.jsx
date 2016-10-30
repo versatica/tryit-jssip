@@ -27,11 +27,10 @@ export default class Phone extends React.Component
 
 		this.state =
 		{
-			uri      : '',
 			// 'connecting' / disconnected' / 'connected' / 'registered'
-			status   : 'disconnected',
-			session  : null,
-			incoming : null
+			status          : 'disconnected',
+			session         : null,
+			incomingSession : null
 		};
 
 		// Mounted flag
@@ -70,7 +69,7 @@ export default class Phone extends React.Component
 										primaryText='Copy invitation link'
 									/>
 								</CopyToClipboard>
-								<CopyToClipboard text={state.uri}
+								<CopyToClipboard text={props.me.uri || ''}
 									onCopy={this.handleMenuCopyUri.bind(this)}
 								>
 									<MenuItem
@@ -87,7 +86,7 @@ export default class Phone extends React.Component
 						<Dialer
 							me={props.me}
 							status={state.status}
-							busy={state.session || state.incoming}
+							busy={!!state.session || !!state.incomingSession}
 							onCall={this.handleOutgoingCall.bind(this)}
 						/>
 					</header>
@@ -103,9 +102,9 @@ export default class Phone extends React.Component
 							null
 						}
 
-						{state.incoming ?
+						{state.incomingSession ?
 							<Incoming
-								session={state.incoming.session}
+								session={state.incomingSession}
 								onAnswer={this.handleAnswerIncoming.bind(this)}
 								onReject={this.handleRejectIncoming.bind(this)}
 							/>
@@ -214,26 +213,32 @@ export default class Phone extends React.Component
 
 			logger.debug('UA "newRTCSession" event');
 
+			let state = this.state;
 			let session = data.session;
 
-			// TODO: avoid if busy or other incoming
+			// Avoid if busy or other incoming
+			if (state.session || state.incomingSession) {
+				logger.debug('incoming call replied with 486 "Busy Here"');
+
+				session.terminate(
+					{
+						status_code   : 486,
+						reason_phrase : 'Busy Here'
+					});
+
+				return;
+			}
 
 			audioPlayer.play('ringing');
-			this.setState(
-				{
-					incoming :
-					{
-						session : session
-					}
-				});
+			this.setState({ incomingSession: session });
 
 			session.on('failed', () =>
 			{
 				audioPlayer.stop('ringing');
 				this.setState(
 					{
-						session  : null,
-						incoming : null
+						session         : null,
+						incomingSession : null
 					});
 			});
 
@@ -241,8 +246,8 @@ export default class Phone extends React.Component
 			{
 				this.setState(
 					{
-						session  : null,
-						incoming : null
+						session         : null,
+						incomingSession : null
 					});
 			});
 
@@ -251,8 +256,8 @@ export default class Phone extends React.Component
 				audioPlayer.stop('ringing');
 				this.setState(
 					{
-						session  : session,
-						incoming : null
+						session         : session,
+						incomingSession : null
 					});
 			});
 		});
@@ -331,7 +336,7 @@ export default class Phone extends React.Component
 	{
 		logger.debug('handleAnswerIncoming()');
 
-		let session = this.state.incoming.session;
+		let session = this.state.incomingSession;
 
 		session.answer();
 	}
@@ -340,7 +345,7 @@ export default class Phone extends React.Component
 	{
 		logger.debug('handleRejectIncoming()');
 
-		let session = this.state.incoming.session;
+		let session = this.state.incomingSession;
 
 		session.terminate();
 	}

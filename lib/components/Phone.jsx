@@ -53,11 +53,18 @@ export default class Phone extends React.Component
 								anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
 								targetOrigin={{ horizontal: 'right', vertical: 'top' }}
 							>
-								<CopyToClipboard text='SALUDOS JAJAJA'
+								<CopyToClipboard text='TODO'
 									onCopy={this.handleMenuCopyInvitationLink.bind(this)}
 								>
 									<MenuItem
 										primaryText='Copy invitation link'
+									/>
+								</CopyToClipboard>
+								<CopyToClipboard text='sip:TODO@aliax.net'
+									onCopy={this.handleMenuCopyUri.bind(this)}
+								>
+									<MenuItem
+										primaryText='Copy my SIP URI'
 									/>
 								</CopyToClipboard>
 								<MenuItem
@@ -88,7 +95,14 @@ export default class Phone extends React.Component
 
 	handleMenuCopyInvitationLink(text)
 	{
-		let message = `Invitation link copied to the clipboard: ${text}`;
+		let message = 'Invitation link copied to the clipboard';
+
+		this.props.onShowSnackbar(message, 3000);
+	}
+
+	handleMenuCopyUri(text)
+	{
+		let message = 'Your SIP URI copied to the clipboard';
 
 		this.props.onShowSnackbar(message, 3000);
 	}

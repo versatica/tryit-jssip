@@ -3,7 +3,6 @@
 import React from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Logger from '../Logger';
-import storage from '../storage';
 import muiTheme from './muiTheme';
 import Snackbar from 'material-ui/Snackbar';
 import Notifier from './Notifier';
@@ -151,8 +150,6 @@ export default class App extends React.Component
 	handleLogout()
 	{
 		logger.debug('handleLogout()');
-
-		storage.clear();
 
 		// Go to login
 		this.setState(

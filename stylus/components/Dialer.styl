@@ -1,5 +1,43 @@
 [data-component='Dialer'] {
 	padding: 20px;
 	background-color: #eee;
-	color: #666;
+
+	+desktop() {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-around;
+	}
+
+	> .status-bar {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+
+		+mobile() {
+			margin-bottom: 20px;
+		}
+
+		.uri {
+			color: #999;
+		}
+	}
+
+	> form.uri-form {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+
+		> .uri-container {
+			flex: 100 0 auto;
+			margin-right: 20px;
+
+			+desktop() {
+				min-width: 300px;
+				max-width: 400px;
+			}
+		}
+	}
 }

@@ -114,7 +114,6 @@ export default class Login extends React.Component
 		logger.debug('handleSubmit()');
 
 		event.preventDefault();
-
 		this._checkForm();
 	}
 
@@ -134,8 +133,6 @@ export default class Login extends React.Component
 
 	_createUserId(name)
 	{
-		logger.debug('_createUserId() [name:"%s"]', name);
-
 		return encodeURI(`${name.toLowerCase().replace(/[\t\s\\]/g, '_')}_${randomString({ length: 6 })}`);
 	}
 

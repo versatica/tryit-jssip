@@ -18,7 +18,8 @@ export default class Session extends React.Component
 		{
 			remoteHasVideo : false,
 			localHold      : false,
-			remoteHold     : false
+			remoteHold     : false,
+			canHold        : false
 		};
 
 		// Local cloned stream
@@ -28,9 +29,12 @@ export default class Session extends React.Component
 	render()
 	{
 		let state = this.state;
+		let props = this.props;
 		let noRemoteVideo;
 
-		if (state.localHold && state.remoteHold)
+		if (props.session.isInProgress())
+			noRemoteVideo = <div className='message ringing'>ringing ...</div>;
+		else if (state.localHold && state.remoteHold)
 			noRemoteVideo = <div className='message both-hold'>both hold</div>;
 		else if (state.localHold)
 			noRemoteVideo = <div className='message local-hold'>local hold</div>;
@@ -61,9 +65,20 @@ export default class Session extends React.Component
 					<div className='controls-container'>
 						<div className='controls'>
 							<div
-								className='control hang-up'
+								className={classnames('control', 'hang-up')}
 								onClick={this.handleHangUp.bind(this)}
 							/>
+							{!state.localHold ?
+								<div
+									className={classnames('control', 'hold', { disabled: !state.canHold })}
+									onClick={this.handleHold.bind(this)}
+								/>
+							:
+								<div
+									className={classnames('control', 'resume', { disabled: !state.canHold })}
+									onClick={this.handleResume.bind(this)}
+								/>
+							}
 						</div>
 					</div>
 				</div>
@@ -74,16 +89,23 @@ export default class Session extends React.Component
 	componentDidMount()
 	{
 		let localVideo = this.refs.localVideo;
-		let remoteVideo = this.refs.remoteVideo;
 		let session = this.props.session;
 		let peerconnection = session.connection;
 		let localStream = peerconnection.getLocalStreams()[0];
+		let remoteStream = peerconnection.getRemoteStreams()[0];
 
 		// Clone local stream
 		this._localClonedStream = localStream.clone();
 
 		// Display local video
 		localVideo.srcObject = this._localClonedStream;
+
+		// If incoming all we already have the remote stream
+		if (remoteStream)
+			this._handleRemoteStream(remoteStream);
+
+		if (session.isEstablished())
+			setTimeout(() => this.setState({ canHold: true }));
 
 		session.on('accepted', (data) =>
 		{
@@ -97,6 +119,8 @@ export default class Session extends React.Component
 						title : 'Call answered'
 					});
 			}
+
+			this.setState({ canHold: true });
 		});
 
 		session.on('failed', (data) =>
@@ -161,38 +185,7 @@ export default class Session extends React.Component
 		{
 			logger.debug('peerconnection "addstream" event');
 
-			let stream = event.stream;
-
-			// Display remote video
-			remoteVideo.srcObject = stream;
-
-			this._checkRemoteVideo(stream);
-
-			stream.addEventListener('addtrack', () =>
-			{
-				if (remoteVideo.srcObject !== stream)
-					return;
-
-				logger.debug('remote stream "addtrack" event');
-
-				// Refresh remote video
-				remoteVideo.srcObject = stream;
-
-				this._checkRemoteVideo(stream);
-			});
-
-			stream.addEventListener('removetrack', () =>
-			{
-				if (remoteVideo.srcObject !== stream)
-					return;
-
-				logger.debug('remote stream "removetrack" event');
-
-				// Refresh remote video
-				remoteVideo.srcObject = stream;
-
-				this._checkRemoteVideo(stream);
-			});
+			this._handleRemoteStream(event.stream);
 		});
 	}
 
@@ -208,11 +201,59 @@ export default class Session extends React.Component
 		this.props.session.terminate();
 	}
 
+	handleHold()
+	{
+		logger.debug('handleHold()');
+
+		this.props.session.hold({ useUpdate: true });
+	}
+
+	handleResume()
+	{
+		logger.debug('handleResume()');
+
+		this.props.session.unhold({ useUpdate: true });
+	}
+
+	_handleRemoteStream(stream)
+	{
+		let remoteVideo = this.refs.remoteVideo;
+
+		// Display remote video
+		remoteVideo.srcObject = stream;
+
+		this._checkRemoteVideo(stream);
+
+		stream.addEventListener('addtrack', () =>
+		{
+			if (remoteVideo.srcObject !== stream)
+				return;
+
+			logger.debug('remote stream "addtrack" event');
+
+			// Refresh remote video
+			remoteVideo.srcObject = stream;
+
+			this._checkRemoteVideo(stream);
+		});
+
+		stream.addEventListener('removetrack', () =>
+		{
+			if (remoteVideo.srcObject !== stream)
+				return;
+
+			logger.debug('remote stream "removetrack" event');
+
+			// Refresh remote video
+			remoteVideo.srcObject = stream;
+
+			this._checkRemoteVideo(stream);
+		});
+	}
+
 	_checkRemoteVideo(stream)
 	{
 		let videoTrack = stream.getVideoTracks()[0];
-
-		logger.debug('_checkRemoteVideo() [stream:%o, videoTrack:%o]', stream, videoTrack);
 
 		this.setState({ remoteHasVideo: !!videoTrack });
 	}

@@ -23,27 +23,40 @@
 			margin-bottom: 20px;
 		}
 
-		.status {
-			&.disconnected {
-				background-color: #ccc !important;
+		.chip {
+			flex: 0 0 auto;
+			width: 100% !important;
+
+			.status {
+				flex: 0 0 auto;
+
+				&.disconnected {
+					background-color: #ccc !important;
+				}
+
+				&.connecting {
+					background-color: #d4d01c !important;
+					animation: status-connecting 1s infinite ease-in;
+				}
+
+				&.connected {
+					background-color: #d4d01c !important ;
+				}
+
+				&.registered {
+					background-color: #47d41c !important;
+				}
 			}
 
-			&.connecting {
-				background-color: #d4d01c !important;
-				animation: status-connecting 1s infinite ease-in;
-			}
+			> span {
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
 
-			&.connected {
-				background-color: #d4d01c !important ;
+				.uri {
+					color: #999;
+				}
 			}
-
-			&.registered {
-				background-color: #47d41c !important;
-			}
-		}
-
-		.uri {
-			color: #999;
 		}
 	}
 

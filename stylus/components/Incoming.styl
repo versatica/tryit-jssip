@@ -1,0 +1,40 @@
+[data-component='Incoming'] {
+	flex: 0 0 auto;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	background-color: rgba(#000, 0.25);
+	padding: 50px;
+
+	TransitionAppear(1s);
+
+	> .info {
+		margin-bottom: 40px;
+
+		.chip {
+			width: 100%;
+
+			> span {
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+
+				.uri {
+					color: #999;
+				}
+			}
+		}
+	}
+
+	> .buttons {
+		> div:first-child {
+			margin-right: 10px;
+		}
+
+		> div:last-child {
+			margin-left: 10px;
+		}
+	}
+}

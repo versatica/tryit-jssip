@@ -23,12 +23,12 @@ const STYLE =
 		info :
 		{
 			color     : '#000',
-			borderTop : '2px solid rgba(255,0,78, 0.75)'
+			borderTop : '2px solid rgba(66,66,66, 0.75)'
 		},
 		success :
 		{
 			color     : '#000',
-			borderTop : '4px solid rgba(5,189,63, 0.85)'
+			borderTop : '4px solid rgba(7,78,82, 0.85)'
 		},
 		error :
 		{
@@ -50,11 +50,11 @@ const STYLE =
 		},
 		info :
 		{
-			color : 'rgba(255,0,78, 0.85)'
+			color : 'rgba(66,66,66, 0.85)'
 		},
 		success :
 		{
-			color : 'rgba(5,189,63, 0.9)'
+			color : 'rgba(7,78,82, 0.9)'
 		},
 		error :
 		{
@@ -81,11 +81,11 @@ const STYLE =
 		},
 		info :
 		{
-			backgroundColor : 'rgba(255,0,78, 1)'
+			backgroundColor : 'rgba(66,66,66, 1)'
 		},
 		success :
 		{
-			backgroundColor : 'rgba(5,189,63, 1)'
+			backgroundColor : 'rgba(7,78,82, 1)'
 		}
 	}
 };

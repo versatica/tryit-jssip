@@ -7,6 +7,7 @@ import Chip from 'material-ui/Chip';
 import Avatar from 'material-ui/Avatar';
 import classnames from 'classnames';
 import Logger from '../Logger';
+import User from '../User';
 
 const logger = new Logger('Dialer');
 
@@ -30,12 +31,11 @@ export default class Dialer extends React.Component
 		return (
 			<div data-component='Dialer'>
 				<div className='status-bar'>
-
-					<Chip>
+					<Chip className='chip'>
 						<Avatar
 							className={classnames('status', props.status)}
 						/>
-						Iñaki Baz <span className='uri'>&lt;sip:ibc@aliax.net&gt;</span>
+						{props.me.name} <span className='uri'>&lt;{props.me.uri}&gt;</span>
 					</Chip>
 				</div>
 
@@ -112,6 +112,7 @@ export default class Dialer extends React.Component
 
 Dialer.propTypes =
 {
+	me     : React.PropTypes.instanceOf(User).isRequired,
 	status : React.PropTypes.string.isRequired,
 	busy   : React.PropTypes.bool.isRequired,
 	onCall : React.PropTypes.func.isRequired

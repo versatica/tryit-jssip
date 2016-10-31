@@ -7,6 +7,7 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import JsSIP from 'jssip';
+import UrlParse from 'url-parse';
 import Logger from '../Logger';
 import audioPlayer from '../audioPlayer';
 import User from '../User';
@@ -37,12 +38,15 @@ export default class Phone extends React.Component
 		this._mounted = false;
 		// JsSIP.UA instance
 		this._ua = null;
+		// Site URL
+		this._u = new UrlParse(window.location.href, true);
 	}
 
 	render()
 	{
 		let state = this.state;
 		let props = this.props;
+		let invitationLink = `${this._u.protocol}//${this._u.host}${this._u.pathname}?callme=${props.me.uri}`;
 
 		return (
 			<TransitionAppear duration={1000}>
@@ -62,7 +66,7 @@ export default class Phone extends React.Component
 								anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
 								targetOrigin={{ horizontal: 'right', vertical: 'top' }}
 							>
-								<CopyToClipboard text='TODO'
+								<CopyToClipboard text={invitationLink}
 									onCopy={this.handleMenuCopyInvitationLink.bind(this)}
 								>
 									<MenuItem
@@ -87,6 +91,7 @@ export default class Phone extends React.Component
 							me={props.me}
 							status={state.status}
 							busy={!!state.session || !!state.incomingSession}
+							callme={this._u.query.callme}
 							onCall={this.handleOutgoingCall.bind(this)}
 						/>
 					</header>

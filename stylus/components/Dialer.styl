@@ -13,46 +13,16 @@
 		padding: 20px;
 	}
 
-	> .status-bar {
+	> .userchip-container {
 		display: flex;
 		flex-direction: row;
 		align-items: center;
 		justify-content: center;
 
-		.chip {
-			flex: 0 0 auto;
-			width: 100% !important;
-
-			.status {
-				flex: 0 0 auto;
-
-				&.disconnected {
-					background-color: #ccc !important;
-				}
-
-				&.connecting {
-					background-color: #d4d01c !important;
-					animation: status-connecting 1s infinite ease-in;
-				}
-
-				&.connected {
-					background-color: #d4d01c !important ;
-				}
-
-				&.registered {
-					background-color: #47d41c !important;
-				}
-			}
-
-			> span {
-				overflow: hidden;
-				white-space: nowrap;
-				text-overflow: ellipsis;
-
-				.uri {
-					color: #999;
-				}
-			}
+		+desktop() {
+			flex: 0 10 auto;
+			max-width: 40%;
+			margin-right: 10px;
 		}
 	}
 
@@ -61,6 +31,12 @@
 		flex-direction: row;
 		align-items: center;
 		justify-content: center;
+
+		+desktop() {
+			flex: 0 10 auto;
+			max-width: 40%;
+			margin-left: 10px;
+		}
 
 		+mobile() {
 			margin-top: 20px;
@@ -71,7 +47,7 @@
 		}
 
 		> .uri-container {
-			flex: 100 0 auto;
+			flex: 10 10 auto;
 			margin-right: 20px;
 
 			+desktop() {
@@ -79,11 +55,5 @@
 				max-width: 400px;
 			}
 		}
-	}
-}
-
-@keyframes status-connecting {
-	50% {
-		opacity: 0.25;
 	}
 }

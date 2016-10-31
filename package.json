@@ -19,7 +19,8 @@
     "react-copy-to-clipboard": "^4.2.3",
     "react-dom": "^15.3.1",
     "react-notification-system": "ibc/react-notification-system#master",
-    "react-tap-event-plugin": "^1.0.0"
+    "react-tap-event-plugin": "^1.0.0",
+    "url-parse": "^1.1.6"
   },
   "devDependencies": {
     "babel-plugin-transform-object-assign": "^6.8.0",

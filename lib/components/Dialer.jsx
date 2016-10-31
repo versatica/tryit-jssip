@@ -3,11 +3,11 @@
 import React from 'react';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-import Chip from 'material-ui/Chip';
-import Avatar from 'material-ui/Avatar';
 import classnames from 'classnames';
 import Logger from '../Logger';
+import utils from '../utils';
 import User from '../User';
+import UserChip from './UserChip';
 
 const logger = new Logger('Dialer');
 
@@ -19,7 +19,7 @@ export default class Dialer extends React.Component
 
 		this.state =
 		{
-			uri : ''
+			uri : props.callme || ''
 		};
 	}
 
@@ -30,17 +30,17 @@ export default class Dialer extends React.Component
 
 		return (
 			<div data-component='Dialer'>
-				<div className='status-bar'>
-					<Chip className='chip'>
-						<Avatar
-							className={classnames('status', props.status)}
-						/>
-						{props.me.name} <span className='uri'>&lt;{props.me.uri}&gt;</span>
-					</Chip>
+				<div className='userchip-container'>
+					<UserChip
+						name={props.me.name}
+						uri={props.me.uri || ''}
+						status={props.status}
+						fullWidth
+					/>
 				</div>
 
 				<form
-					className={classnames('uri-form', { hidden: props.busy })}
+					className={classnames('uri-form', { hidden: props.busy && utils.isMobile() })}
 					action=''
 					onSubmit={this.handleSubmit.bind(this)}
 				>
@@ -115,5 +115,6 @@ Dialer.propTypes =
 	me     : React.PropTypes.instanceOf(User).isRequired,
 	status : React.PropTypes.string.isRequired,
 	busy   : React.PropTypes.bool.isRequired,
+	callme : React.PropTypes.string,
 	onCall : React.PropTypes.func.isRequired
 };

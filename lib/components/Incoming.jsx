@@ -2,9 +2,9 @@
 
 import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
-import Chip from 'material-ui/Chip';
 import Logger from '../Logger';
 import TransitionAppear from './TransitionAppear';
+import UserChip from './UserChip';
 
 const logger = new Logger('Incoming');
 
@@ -24,11 +24,10 @@ export default class Incoming extends React.Component
 		return (
 			<TransitionAppear duration={1000}>
 				<div data-component='Incoming'>
-					<div className='info'>
-						<Chip className='chip'>
-							{name} <span className='uri'>&lt;{uri}&gt;</span>
-						</Chip>
-					</div>
+					<UserChip
+						name={name}
+						uri={uri}
+					/>
 
 					<div className='buttons'>
 						<RaisedButton

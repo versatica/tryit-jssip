@@ -1,0 +1,44 @@
+[data-component='UserChip'] {
+	max-width: 100%;
+
+	&.full-width {
+		width: 100% !important;
+	}
+
+	.status {
+		flex: 0 0 auto;
+
+		&.disconnected {
+			background-color: #ccc !important;
+		}
+
+		&.connecting {
+			background-color: #d4d01c !important;
+			animation: UserChip-status-connecting 1s infinite ease-in;
+		}
+
+		&.connected {
+			background-color: #d4d01c !important ;
+		}
+
+		&.registered {
+			background-color: #47d41c !important;
+		}
+	}
+
+	> span {
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+
+		.uri {
+			color: #999;
+		}
+	}
+}
+
+@keyframes UserChip-status-connecting {
+	50% {
+		opacity: 0;
+	}
+}

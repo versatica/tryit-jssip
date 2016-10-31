@@ -69,7 +69,6 @@
 		> .controls {
 			width: auto;
 			margin: 0 auto;
-			padding: 10px 40px;
 			display: flex;
 			flex-direction: row;
 			align-items: center;
@@ -78,16 +77,31 @@
 			border-top-left-radius: 12px;
 			border-top-right-radius: 12px;
 
+			+desktop() {
+				padding: 10px 30px;
+			}
+
+			+mobile() {
+				padding: 5px 20px;
+			}
+
 			> .control {
 				background-size: 100%;
 				background-position: center;
 				background-repeat: no-repeat;
-				height: 50px;
-				width: 50px;
 				margin: 0 10px;
-				transition-property: opacity;
-				transition-duration: 0.25s;
+				transition: opacity 0.15s ease-in-out 0s !important;
 				opacity: 0.6;
+
+				+desktop() {
+					height: 60px !important;
+					width: 60px !important;
+				}
+
+				+mobile() {
+					height: 40px !important;
+					width: 40px !important;
+				}
 
 				&:hover {
 					opacity: 0.9;
@@ -97,20 +111,6 @@
 				&.disabled {
 					pointer-events: none;
 					opacity: 0.25;
-				}
-
-				&.hang-up {
-					background-image: url('/resources/images/hang-up.svg');
-				}
-
-				&.hold {
-					background-image: url('/resources/images/hold.svg');
-					background-size: 75%;
-				}
-
-				&.resume {
-					background-image: url('/resources/images/resume.svg');
-					background-size: 75%;
 				}
 			}
 		}

@@ -319,11 +319,14 @@ export default class Phone extends React.Component
 				}
 			});
 
-		audioPlayer.play('ringback');
-
 		session.on('connecting', () =>
 		{
 			this.setState({ session });
+		});
+
+		session.on('progress', () =>
+		{
+			audioPlayer.play('ringback');
 		});
 
 		session.on('failed', () =>

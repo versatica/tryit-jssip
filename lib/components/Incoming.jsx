@@ -2,6 +2,8 @@
 
 import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
+import AnswerIcon from 'material-ui/svg-icons/communication/phone';
+import RejectIcon from 'material-ui/svg-icons/communication/call-end';
 import Logger from '../Logger';
 import TransitionAppear from './TransitionAppear';
 import UserChip from './UserChip';
@@ -33,11 +35,13 @@ export default class Incoming extends React.Component
 						<RaisedButton
 							label='Answer'
 							primary
+							icon={<AnswerIcon color={'#fff'}/>}
 							onClick={this.handleClickAnswer.bind(this)}
 						/>
 						<RaisedButton
 							label='Reject'
 							secondary
+							icon={<RejectIcon color={'#fff'}/>}
 							onClick={this.handleClickReject.bind(this)}
 						/>
 					</div>

@@ -1,6 +1,9 @@
 'use strict';
 
 import React from 'react';
+import HangUpIcon from 'material-ui/svg-icons/communication/call-end';
+import PauseIcon from 'material-ui/svg-icons/av/pause-circle-outline';
+import ResumeIcon from 'material-ui/svg-icons/av/play-circle-outline';
 import classnames from 'classnames';
 import JsSIP from 'jssip';
 import Logger from '../Logger';
@@ -20,7 +23,8 @@ export default class Session extends React.Component
 			remoteHasVideo : false,
 			localHold      : false,
 			remoteHold     : false,
-			canHold        : false
+			canHold        : false,
+			ringing        : false
 		};
 
 		// Mounted flag
@@ -35,16 +39,18 @@ export default class Session extends React.Component
 		let props = this.props;
 		let noRemoteVideo;
 
-		if (props.session.isInProgress())
-			noRemoteVideo = <div className='message ringing'>ringing ...</div>;
+		if (props.session.isInProgress() && !state.ringing)
+			noRemoteVideo = <div className='message'>connecting ...</div>;
+		else if (state.ringing)
+			noRemoteVideo = <div className='message'>ringing ...</div>;
 		else if (state.localHold && state.remoteHold)
-			noRemoteVideo = <div className='message both-hold'>both hold</div>;
+			noRemoteVideo = <div className='message'>both hold</div>;
 		else if (state.localHold)
-			noRemoteVideo = <div className='message local-hold'>local hold</div>;
+			noRemoteVideo = <div className='message'>local hold</div>;
 		else if (state.remoteHold)
-			noRemoteVideo = <div className='message remote-hold'>remote hold</div>;
+			noRemoteVideo = <div className='message'>remote hold</div>;
 		else if (!state.remoteHasVideo)
-			noRemoteVideo = <div className='message no-remote-video'>no remote video</div>;
+			noRemoteVideo = <div className='message'>no remote video</div>;
 
 		return (
 			<TransitionAppear duration={1000}>
@@ -72,18 +78,21 @@ export default class Session extends React.Component
 
 					<div className='controls-container'>
 						<div className='controls'>
-							<div
-								className={classnames('control', 'hang-up')}
+							<HangUpIcon
+								className='control'
+								color={'#fff'}
 								onClick={this.handleHangUp.bind(this)}
 							/>
 							{!state.localHold ?
-								<div
-									className={classnames('control', 'hold', { disabled: !state.canHold })}
+								<PauseIcon
+									className='control'
+									color={'#fff'}
 									onClick={this.handleHold.bind(this)}
 								/>
 							:
-								<div
-									className={classnames('control', 'resume', { disabled: !state.canHold })}
+								<ResumeIcon
+									className='control'
+									color={'#fff'}
 									onClick={this.handleResume.bind(this)}
 								/>
 							}
@@ -138,6 +147,14 @@ export default class Session extends React.Component
 			});
 		}
 
+		session.on('progress', (data) =>
+		{
+			logger.debug('session "progress" event [data:%o]', data);
+
+			if (session.direction === 'outgoing')
+				this.setState({ ringing: true });
+		});
+
 		session.on('accepted', (data) =>
 		{
 			logger.debug('session "accepted" event [data:%o]', data);
@@ -151,7 +168,7 @@ export default class Session extends React.Component
 					});
 			}
 
-			this.setState({ canHold: true });
+			this.setState({ canHold: true, ringing: false });
 		});
 
 		session.on('failed', (data) =>
@@ -164,6 +181,9 @@ export default class Session extends React.Component
 					title   : 'Call failed',
 					message : `Cause: ${data.cause}`
 				});
+
+			if (session.direction === 'outgoing')
+				this.setState({ ringing: false });
 		});
 
 		session.on('ended', (data) =>
@@ -176,6 +196,9 @@ export default class Session extends React.Component
 					title   : 'Call ended',
 					message : `Cause: ${data.cause}`
 				});
+
+			if (session.direction === 'outgoing')
+				this.setState({ ringing: false });
 		});
 
 		session.on('hold', (data) =>

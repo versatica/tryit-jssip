@@ -307,7 +307,16 @@ export default class Phone extends React.Component
 
 		let session = this._ua.call(uri,
 			{
-				mediaConstraints : { audio: true, video: true }
+				mediaConstraints :
+				{
+					audio : true,
+					video : true
+				},
+				rtcOfferConstraints :
+				{
+					offerToReceiveAudio : 1,
+					offerToReceiveVideo : 1
+				}
 			});
 
 		audioPlayer.play('ringback');

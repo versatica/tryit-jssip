@@ -110,7 +110,7 @@ export default class Session extends React.Component
 			// Clone local stream
 			this._localClonedStream = localStream.clone();
 
-			// Display local video
+			// Display local stream
 			localVideo.srcObject = this._localClonedStream;
 
 			setTimeout(() =>
@@ -118,7 +118,8 @@ export default class Session extends React.Component
 				if (!this._mounted)
 					return;
 
-				this.setState({ localHasVideo: true });
+				if (localStream.getVideoTracks()[0])
+					this.setState({ localHasVideo: true });
 			}, 1000);
 		}
 
@@ -250,7 +251,7 @@ export default class Session extends React.Component
 	{
 		let remoteVideo = this.refs.remoteVideo;
 
-		// Display remote video
+		// Display remote stream
 		remoteVideo.srcObject = stream;
 
 		this._checkRemoteVideo(stream);

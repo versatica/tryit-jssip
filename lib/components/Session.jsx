@@ -149,6 +149,9 @@ export default class Session extends React.Component
 
 		session.on('progress', (data) =>
 		{
+			if (!this._mounted)
+				return;
+
 			logger.debug('session "progress" event [data:%o]', data);
 
 			if (session.direction === 'outgoing')
@@ -157,6 +160,9 @@ export default class Session extends React.Component
 
 		session.on('accepted', (data) =>
 		{
+			if (!this._mounted)
+				return;
+
 			logger.debug('session "accepted" event [data:%o]', data);
 
 			if (session.direction === 'outgoing')
@@ -173,6 +179,9 @@ export default class Session extends React.Component
 
 		session.on('failed', (data) =>
 		{
+			if (!this._mounted)
+				return;
+
 			logger.debug('session "failed" event [data:%o]', data);
 
 			this.props.onNotify(
@@ -188,6 +197,9 @@ export default class Session extends React.Component
 
 		session.on('ended', (data) =>
 		{
+			if (!this._mounted)
+				return;
+
 			logger.debug('session "ended" event [data:%o]', data);
 
 			this.props.onNotify(
@@ -203,6 +215,9 @@ export default class Session extends React.Component
 
 		session.on('hold', (data) =>
 		{
+			if (!this._mounted)
+				return;
+
 			let originator = data.originator;
 
 			logger.debug('session "hold" event [originator:%s]', originator);
@@ -220,6 +235,9 @@ export default class Session extends React.Component
 
 		session.on('unhold', (data) =>
 		{
+			if (!this._mounted)
+				return;
+
 			let originator = data.originator;
 
 			logger.debug('session "unhold" event [originator:%s]', originator);
@@ -308,6 +326,9 @@ export default class Session extends React.Component
 
 	_checkRemoteVideo(stream)
 	{
+		if (!this._mounted)
+			return;
+
 		let videoTrack = stream.getVideoTracks()[0];
 
 		this.setState({ remoteHasVideo: !!videoTrack });

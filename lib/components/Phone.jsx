@@ -18,8 +18,9 @@ import Dialer from './Dialer';
 import Session from './Session';
 import Incoming from './Incoming';
 
-const callstats = window.callstats;
+const callstatsModule = window.callstats;
 const jssipCallstats = window.jssipCallstats;
+
 const logger = new Logger('Phone');
 
 export default class Phone extends React.Component
@@ -42,7 +43,7 @@ export default class Phone extends React.Component
 		this._ua = null;
 		// Site URL
 		this._u = new UrlParse(window.location.href, true);
-		// JsSIP callstats handler
+		// callstats object
 		this._callstats = null;
 	}
 
@@ -273,8 +274,18 @@ export default class Phone extends React.Component
 
 		this._ua.start();
 
-		// Set JsSIP callstats stuff
-		this._callstats = jssipCallstats(this._ua, callstats);
+		// Set callstats stuff
+
+		this._callstats = jssipCallstats(
+			// JsSIP.UA instance
+			this._ua,
+			// callstats module
+			callstatsModule,
+			// AppID
+			'757893717',
+			// AppSecret
+			'zAWooDtrYJPo:OeNNdLBBk7nOq9mCS5qbxOhuzt6IdCvnx3cjNGj2tBo='
+		);
 	}
 
 	componentWillUnmount()

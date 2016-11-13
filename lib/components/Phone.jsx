@@ -129,19 +129,38 @@ export default class Phone extends React.Component
 		let settings = this.props.settings;
 		let socket = new JsSIP.WebSocketInterface(settings.socket.uri);
 
-		// TODO
-		if (settings.socket.via_transport)
+		if (settings.socket.via_transport !== 'auto')
 			socket.via_transport = settings.socket.via_transport;
 
-		this._ua = new JsSIP.UA(
-			{
-				uri                 : settings.uri,
-				password            : settings.password,
-				display_name        : settings.display_name,
-				sockets             : [ socket ],
-				session_timers      : settings.session_timers,
-				use_preloaded_route : settings.use_preloaded_route
-			});
+		try
+		{
+			this._ua = new JsSIP.UA(
+				{
+					uri                 : settings.uri,
+					password            : settings.password,
+					display_name        : settings.display_name,
+					sockets             : [ socket ],
+					registrar_server    : settings.registrar_server,
+					contact_uri         : settings.contact_uri,
+					authorization_user  : settings.authorization_user,
+					instance_id         : settings.instance_id,
+					session_timers      : settings.session_timers,
+					use_preloaded_route : settings.use_preloaded_route
+				});
+		}
+		catch (error)
+		{
+			this.props.onNotify(
+				{
+					level   : 'error',
+					title   : 'Wrong JsSIP.UA settings',
+					message : error.message
+				});
+
+			this.props.onExit();
+			return;
+		}
+
 
 		this._ua.on('connecting', () =>
 		{
@@ -282,14 +301,18 @@ export default class Phone extends React.Component
 		this._ua.start();
 
 		// Set callstats stuff
-		jssipCallstats(
-			// JsSIP.UA instance
-			this._ua,
-			// AppID
-			'757893717',
-			// AppSecret
-			'zAWooDtrYJPo:OeNNdLBBk7nOq9mCS5qbxOhuzt6IdCvnx3cjNGj2tBo='
-		);
+		if (settings.callstats.enabled)
+		{
+			jssipCallstats(
+				// JsSIP.UA instance
+				this._ua,
+				// AppID
+				settings.callstats.AppID,
+				// AppSecret
+				// 'zAWooDtrYJPo:OeNNdLBBk7nOq9mCS5qbxOhuzt6IdCvnx3cjNGj2tBo='
+				settings.callstats.AppSecret
+			);
+		}
 	}
 
 	componentWillUnmount()

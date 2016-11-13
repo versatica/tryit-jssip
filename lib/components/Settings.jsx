@@ -4,6 +4,8 @@ import React from 'react';
 import {List, ListItem} from 'material-ui/List';
 import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
 import clone from 'clone';
 import Logger from '../Logger';
@@ -34,7 +36,7 @@ export default class Settings extends React.Component
 				<div data-component='Settings'>
 					<h1>JsSIP UA settings</h1>
 
-					<div className='text-field'>
+					<div className='item'>
 						<TextField
 							floatingLabelText='SIP URI'
 							value={settings.uri || ''}
@@ -44,7 +46,7 @@ export default class Settings extends React.Component
 						/>
 					</div>
 
-					<div className='text-field'>
+					<div className='item'>
 						<TextField
 							floatingLabelText='SIP password'
 							value={settings.password || ''}
@@ -55,13 +57,68 @@ export default class Settings extends React.Component
 						/>
 					</div>
 
-					<div className='text-field'>
+					<div className='item'>
 						<TextField
 							floatingLabelText='WebSocket URI'
 							value={settings.socket.uri || ''}
 							floatingLabelFixed
 							fullWidth
 							onChange={this.handleChangeWebSocketUri.bind(this)}
+						/>
+					</div>
+
+					<div className='item'>
+						<SelectField
+							floatingLabelText='Via transport'
+							value={settings.socket.via_transport || 'auto'}
+							fullWidth
+							onChange={this.handleChangeViaTransport.bind(this)}
+						>
+							<MenuItem value='auto' primaryText='auto'/>
+							<MenuItem value='tcp' primaryText='TCP'/>
+							<MenuItem value='tls' primaryText='TLS'/>
+							<MenuItem value='ws' primaryText='WS'/>
+							<MenuItem value='wss' primaryText='WSS'/>
+						</SelectField>
+					</div>
+
+					<div className='item'>
+						<TextField
+							floatingLabelText='Registrar server'
+							value={settings.registrar_server || ''}
+							floatingLabelFixed
+							fullWidth
+							onChange={this.handleChangeRegistrarServer.bind(this)}
+						/>
+					</div>
+
+					<div className='item'>
+						<TextField
+							floatingLabelText='Contact URI'
+							value={settings.contact_uri || ''}
+							floatingLabelFixed
+							fullWidth
+							onChange={this.handleChangeContactUri.bind(this)}
+						/>
+					</div>
+
+					<div className='item'>
+						<TextField
+							floatingLabelText='Authorization user'
+							value={settings.authorization_user || ''}
+							floatingLabelFixed
+							fullWidth
+							onChange={this.handleChangeAuthorizationUser.bind(this)}
+						/>
+					</div>
+
+					<div className='item'>
+						<TextField
+							floatingLabelText='Instance ID'
+							value={settings.instance_id || ''}
+							floatingLabelFixed
+							fullWidth
+							onChange={this.handleChangeInstanceId.bind(this)}
 						/>
 					</div>
 
@@ -93,7 +150,49 @@ export default class Settings extends React.Component
 						/>
 					</List>
 
-					{/* <h1>callstats.io settings</h1> */}
+					<div className='separator'/>
+
+					<h1>callstats.io settings</h1>
+
+					<List>
+						<ListItem
+							primaryText='Enabled'
+							secondaryText='Send call statistics to callstats.io'
+							secondaryTextLines={1}
+							rightToggle={
+								<Toggle
+									defaultToggled={settings.callstats.enabled}
+									onToggle={this.handleToogleCallstatsEnabled.bind(this)}
+								/>
+							}
+						/>
+					</List>
+
+					<div className='separator'/>
+
+					<div className='item'>
+						<TextField
+							floatingLabelText='AppID'
+							value={settings.callstats.AppID || ''}
+							disabled={!settings.callstats.enabled}
+							floatingLabelFixed
+							fullWidth
+							onChange={this.handleChangeCallstatsAppID.bind(this)}
+						/>
+					</div>
+
+					<div className='item'>
+						<TextField
+							floatingLabelText='AppSecret'
+							value={settings.callstats.AppSecret || ''}
+							disabled={!settings.callstats.enabled}
+							floatingLabelFixed
+							fullWidth
+							onChange={this.handleChangeCallstatsAppSecret.bind(this)}
+						/>
+					</div>
+
+					<div className='separator'/>
 
 					<div className='buttons'>
 						<RaisedButton
@@ -118,45 +217,104 @@ export default class Settings extends React.Component
 	handleChangeSipUri(event)
 	{
 		let settings = this.state.settings;
-		let uri = event.target.value;
 
-		settings.uri = uri;
+		settings.uri = event.target.value;
 		this.setState({ settings });
 	}
 
 	handleChangePassword(event)
 	{
 		let settings = this.state.settings;
-		let password = event.target.value;
 
-		settings.password = password;
+		settings.password = event.target.value;
 		this.setState({ settings });
 	}
 
 	handleChangeWebSocketUri(event)
 	{
 		let settings = this.state.settings;
-		let uri = event.target.value;
 
-		settings.socket.uri = uri;
+		settings.socket.uri = event.target.value;;
+		this.setState({ settings });
+	}
+
+	handleChangeViaTransport(event, key, value)
+	{
+		let settings = this.state.settings;
+
+		settings.socket.via_transport = value;
+		this.setState({ settings });
+	}
+
+	handleChangeRegistrarServer(event)
+	{
+		let settings = this.state.settings;
+
+		settings.registrar_server = event.target.value;
+		this.setState({ settings });
+	}
+
+	handleChangeContactUri(event)
+	{
+		let settings = this.state.settings;
+
+		settings.contact_uri = event.target.value;
+		this.setState({ settings });
+	}
+
+	handleChangeAuthorizationUser(event)
+	{
+		let settings = this.state.settings;
+
+		settings.authorization_user = event.target.value;
+		this.setState({ settings });
+	}
+
+	handleChangeInstanceId(event)
+	{
+		let settings = this.state.settings;
+
+		settings.instance_id = event.target.value;
 		this.setState({ settings });
 	}
 
 	handleToogleSessionTimers()
 	{
 		let settings = this.state.settings;
-		let session_timers = !settings.session_timers;
 
-		settings.session_timers = session_timers;
+		settings.session_timers = !settings.session_timers;
 		this.setState({ settings });
 	}
 
 	handleToogleUsePreloadedRoute()
 	{
 		let settings = this.state.settings;
-		let use_preloaded_route = !settings.use_preloaded_route;
 
-		settings.use_preloaded_route = use_preloaded_route;
+		settings.use_preloaded_route = !settings.use_preloaded_route;
+		this.setState({ settings });
+	}
+
+	handleToogleCallstatsEnabled()
+	{
+		let settings = this.state.settings;
+
+		settings.callstats.enabled = !settings.callstats.enabled;
+		this.setState({ settings });
+	}
+
+	handleChangeCallstatsAppID(event)
+	{
+		let settings = this.state.settings;
+
+		settings.callstats.AppID = event.target.value;
+		this.setState({ settings });
+	}
+
+	handleChangeCallstatsAppSecret(event)
+	{
+		let settings = this.state.settings;
+
+		settings.callstats.AppSecret = event.target.value;
 		this.setState({ settings });
 	}
 

@@ -113,9 +113,6 @@ export default class Session extends React.Component
 		let localStream = peerconnection.getLocalStreams()[0];
 		let remoteStream = peerconnection.getRemoteStreams()[0];
 
-		// TODO: TMP
-		global.SESSION = session;
-
 		// Handle local stream
 		if (localStream)
 		{

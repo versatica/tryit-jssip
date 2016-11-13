@@ -3,7 +3,7 @@
 import React from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Logger from '../Logger';
-import storage from '../storage';
+import settingsManager from '../settingsManager';
 import muiTheme from './muiTheme';
 import Snackbar from 'material-ui/Snackbar';
 import Notifier from './Notifier';
@@ -20,8 +20,8 @@ export default class App extends React.Component
 
 		this.state =
 		{
-			step            : 'login',
-			me              : null,
+			step            : settingsManager.isReady() ? 'phone' : 'login',
+			settings        : settingsManager.get(),
 			showSnackbar    : false,
 			snackbarMessage : null
 		};
@@ -43,6 +43,7 @@ export default class App extends React.Component
 			{
 				component =
 					<Login
+						settings={state.settings}
 						onLogin={this.handleLogin.bind(this)}
 					/>;
 
@@ -53,12 +54,12 @@ export default class App extends React.Component
 			{
 				component =
 					<Phone
-						me={state.me}
+						settings={state.settings}
 						onNotify={this.handleNotify.bind(this)}
 						onHideNotification={this.handleHideNotification.bind(this)}
 						onShowSnackbar={this.handleShowSnackbar.bind(this)}
 						onHideSnackbar={this.handleHideSnackbar.bind(this)}
-						onLogout={this.handleLogout.bind(this)}
+						onExit={this.handlePhoneExit.bind(this)}
 					/>;
 
 				break;
@@ -135,30 +136,29 @@ export default class App extends React.Component
 			});
 	}
 
-	handleLogin(user)
+	handleLogin(settings)
 	{
-		logger.debug('handleLogin() [user:%o]', user);
+		logger.debug('handleLogin() [settings:%o]', settings);
+
+		settingsManager.set(settings);
 
 		// Go to phone
 		this.setState(
 			{
 				step         : 'phone',
-				me           : user,
+				settings     : settingsManager.get(),
 				showSnackbar : false
 			});
 	}
 
-	handleLogout()
+	handlePhoneExit()
 	{
-		logger.debug('handleLogout()');
-
-		storage.clear();
+		logger.debug('handlePhoneExit()');
 
 		// Go to login
 		this.setState(
 			{
 				step         : 'login',
-				me           : null,
 				showSnackbar : false
 			});
 	}

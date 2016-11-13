@@ -10,13 +10,12 @@
 
 		<script src='resources/js/antiglobal.js'></script>
 		<script>
+			// Set debug
 			window.localStorage.setItem('debug', '* -engine* -socket* *ERROR* *WARN*');
 
-			if (window.antiglobal)
-			{
-				window.antiglobal('___browserSync___oldSocketIo', 'JSON3', 'io', '___browserSync___', '__core-js_shared__', 'MediaStream', 'RTCPeerConnection', 'callstats', 'jssipCallstats');
-				setInterval(window.antiglobal, 5000);
-			}
+			// Set antiglobal
+			window.antiglobal('___browserSync___oldSocketIo', 'JSON3', 'io', '___browserSync___', '__core-js_shared__', 'MediaStream', 'RTCPeerConnection', 'callstats', 'jssipCallstats');
+			setInterval(window.antiglobal, 5000);
 		</script>
 		<script src='resources/js/callstats.min.js'></script>
 		<script src='resources/js/jssip-callstats.js'></script>

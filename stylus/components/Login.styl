@@ -1,4 +1,5 @@
 [data-component='Login'] {
+	position: relative;
 	height: 100%;
 	width: 100%;
 	display: flex;
@@ -13,6 +14,7 @@
 	}
 
 	> form {
+		position: relative;
 		flex: 0 0 auto;
 		min-height: 200px;
 		width: 300px;
@@ -25,6 +27,19 @@
 		flex-direction: row;
 		justify-content: center;
 		align-items: center;
+
+		> .settings-icon-container {
+			position: absolute;
+			right: 10px;
+			top: 10px;
+
+			> .icon {
+				&:hover {
+					color: #111;
+					cursor: pointer;
+				}
+			}
+		}
 	}
 
 	> .submit-container {
@@ -67,6 +82,21 @@
 				transform: rotateZ(360deg);
 				transform: scale(1.2);
 			}
+		}
+	}
+
+	> .settings-container {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		z-index: 10;
+
+		+desktop() {
+			margin: 50px auto;
+			max-width: 500px;
+			min-width: 400px;
 		}
 	}
 }

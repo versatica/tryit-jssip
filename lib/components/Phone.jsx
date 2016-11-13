@@ -10,15 +10,12 @@ import JsSIP from 'jssip';
 import UrlParse from 'url-parse';
 import Logger from '../Logger';
 import audioPlayer from '../audioPlayer';
-import User from '../User';
-import config from '../config';
 import TransitionAppear from './TransitionAppear';
 import Logo from './Logo';
 import Dialer from './Dialer';
 import Session from './Session';
 import Incoming from './Incoming';
 
-const callstatsModule = window.callstats;
 const jssipCallstats = window.jssipCallstats;
 
 const logger = new Logger('Phone');
@@ -43,15 +40,13 @@ export default class Phone extends React.Component
 		this._ua = null;
 		// Site URL
 		this._u = new UrlParse(window.location.href, true);
-		// callstats object
-		this._callstats = null;
 	}
 
 	render()
 	{
 		let state = this.state;
 		let props = this.props;
-		let invitationLink = `${this._u.protocol}//${this._u.host}${this._u.pathname}?callme=${props.me.uri}`;
+		let invitationLink = `${this._u.protocol}//${this._u.host}${this._u.pathname}?callme=${props.settings.uri}`;
 
 		return (
 			<TransitionAppear duration={1000}>
@@ -78,7 +73,7 @@ export default class Phone extends React.Component
 										primaryText='Copy invitation link'
 									/>
 								</CopyToClipboard>
-								<CopyToClipboard text={props.me.uri || ''}
+								<CopyToClipboard text={props.settings.uri || ''}
 									onCopy={this.handleMenuCopyUri.bind(this)}
 								>
 									<MenuItem
@@ -87,13 +82,13 @@ export default class Phone extends React.Component
 								</CopyToClipboard>
 								<MenuItem
 									primaryText='Exit'
-									onClick={this.handleMenuLogout.bind(this)}
+									onClick={this.handleMenuExit.bind(this)}
 								/>
 							</IconMenu>
 						</div>
 
 						<Dialer
-							me={props.me}
+							settings={props.settings}
 							status={state.status}
 							busy={!!state.session || !!state.incomingSession}
 							callme={this._u.query.callme}
@@ -131,16 +126,21 @@ export default class Phone extends React.Component
 	{
 		this._mounted = true;
 
-		let me = this.props.me;
+		let settings = this.props.settings;
+		let socket = new JsSIP.WebSocketInterface(settings.socket.uri);
 
-		// Set user uri
-		me.uri = `sip:${me.id}@${config.domain}`;
+		// TODO
+		if (settings.socket.via_transport)
+			socket.via_transport = settings.socket.via_transport;
 
 		this._ua = new JsSIP.UA(
 			{
-				uri          : me.uri,
-				display_name : me.name,
-				ws_servers   : config.socket
+				uri                 : settings.uri,
+				password            : settings.password,
+				display_name        : settings.display_name,
+				sockets             : [ socket ],
+				session_timers      : settings.session_timers,
+				use_preloaded_route : settings.use_preloaded_route
 			});
 
 		this._ua.on('connecting', () =>
@@ -200,7 +200,7 @@ export default class Phone extends React.Component
 				this.setState({ status: 'disconnected' });
 		});
 
-		this._ua.on('registrationFailed', () =>
+		this._ua.on('registrationFailed', (data) =>
 		{
 			if (!this._mounted)
 				return;
@@ -211,6 +211,13 @@ export default class Phone extends React.Component
 				this.setState({ status: 'connected' });
 			else
 				this.setState({ status: 'disconnected' });
+
+			this.props.onNotify(
+				{
+					level   : 'error',
+					title   : 'Registration failed',
+					message : data.cause
+				});
 		});
 
 		this._ua.on('newRTCSession', (data) =>
@@ -275,12 +282,9 @@ export default class Phone extends React.Component
 		this._ua.start();
 
 		// Set callstats stuff
-
-		this._callstats = jssipCallstats(
+		jssipCallstats(
 			// JsSIP.UA instance
 			this._ua,
-			// callstats module
-			callstatsModule,
 			// AppID
 			'757893717',
 			// AppSecret
@@ -311,12 +315,12 @@ export default class Phone extends React.Component
 		this.props.onShowSnackbar(message, 3000);
 	}
 
-	handleMenuLogout()
+	handleMenuExit()
 	{
-		logger.debug('handleMenuLogout()');
+		logger.debug('handleMenuExit()');
 
 		this._ua.stop();
-		this.props.onLogout();
+		this.props.onExit();
 	}
 
 	handleOutgoingCall(uri)
@@ -388,10 +392,10 @@ export default class Phone extends React.Component
 
 Phone.propTypes =
 {
-	me                 : React.PropTypes.instanceOf(User).isRequired,
+	settings           : React.PropTypes.object.isRequired,
 	onNotify           : React.PropTypes.func.isRequired,
 	onHideNotification : React.PropTypes.func.isRequired,
 	onShowSnackbar     : React.PropTypes.func.isRequired,
 	onHideSnackbar     : React.PropTypes.func.isRequired,
-	onLogout           : React.PropTypes.func.isRequired
+	onExit             : React.PropTypes.func.isRequired
 };

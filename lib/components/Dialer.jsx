@@ -6,7 +6,6 @@ import RaisedButton from 'material-ui/RaisedButton';
 import classnames from 'classnames';
 import Logger from '../Logger';
 import utils from '../utils';
-import User from '../User';
 import UserChip from './UserChip';
 
 const logger = new Logger('Dialer');
@@ -27,13 +26,14 @@ export default class Dialer extends React.Component
 	{
 		let state = this.state;
 		let props = this.props;
+		let settings = props.settings;
 
 		return (
 			<div data-component='Dialer'>
 				<div className='userchip-container'>
 					<UserChip
-						name={props.me.name}
-						uri={props.me.uri || ''}
+						name={settings.display_name}
+						uri={settings.uri || ''}
 						status={props.status}
 						fullWidth
 					/>
@@ -112,9 +112,9 @@ export default class Dialer extends React.Component
 
 Dialer.propTypes =
 {
-	me     : React.PropTypes.instanceOf(User).isRequired,
-	status : React.PropTypes.string.isRequired,
-	busy   : React.PropTypes.bool.isRequired,
-	callme : React.PropTypes.string,
-	onCall : React.PropTypes.func.isRequired
+	settings : React.PropTypes.object.isRequired,
+	status   : React.PropTypes.string.isRequired,
+	busy     : React.PropTypes.bool.isRequired,
+	callme   : React.PropTypes.string,
+	onCall   : React.PropTypes.func.isRequired
 };

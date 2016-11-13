@@ -77,7 +77,9 @@ function bundle(options)
 			// required for watchify
 			packageCache : {},
 			// required to be true only for watchify
-			fullPaths    : watch
+			fullPaths    : watch,
+			// Don't parse clone dep (not needed)
+			noParse      : [ 'clone' ]
 		})
 		.transform('babelify',
 			{

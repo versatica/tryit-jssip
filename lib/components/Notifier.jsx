@@ -133,7 +133,7 @@ export default class Notifier extends React.Component
 					{
 						position    : 'br',
 						dismissible : true,
-						autoDismiss : 2
+						autoDismiss : 4
 					}, data);
 				break;
 

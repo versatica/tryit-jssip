@@ -1,1 +1,0 @@
-/Users/ibc/src/jssip-callstats/dist/jssip-callstats.js

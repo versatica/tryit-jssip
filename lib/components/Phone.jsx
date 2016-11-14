@@ -16,7 +16,7 @@ import Dialer from './Dialer';
 import Session from './Session';
 import Incoming from './Incoming';
 
-const jssipCallstats = window.jssipCallstats;
+const callstatsjssip = window.callstatsjssip;
 
 const logger = new Logger('Phone');
 
@@ -303,7 +303,7 @@ export default class Phone extends React.Component
 		// Set callstats stuff
 		if (settings.callstats.enabled)
 		{
-			jssipCallstats(
+			callstatsjssip(
 				// JsSIP.UA instance
 				this._ua,
 				// AppID
@@ -374,11 +374,18 @@ export default class Phone extends React.Component
 			audioPlayer.play('ringback');
 		});
 
-		session.on('failed', () =>
+		session.on('failed', (data) =>
 		{
 			audioPlayer.stop('ringback');
 			audioPlayer.play('rejected');
 			this.setState({ session: null });
+
+			this.props.onNotify(
+				{
+					level   : 'error',
+					title   : 'Call failed',
+					message : data.cause
+				});
 		});
 
 		session.on('ended', () =>

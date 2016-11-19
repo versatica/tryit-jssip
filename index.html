@@ -2,11 +2,11 @@
 
 <html>
 	<head>
-		<title>new tryit-jssip</title>
+		<title>tryit-jssip</title>
 		<meta charset='UTF-8'>
 		<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'>
 
-		<link rel='stylesheet' href='new-tryit-jssip.css'>
+		<link rel='stylesheet' href='tryit-jssip.css'>
 
 		<script src='resources/js/antiglobal.js'></script>
 		<script>
@@ -19,11 +19,37 @@
 		</script>
 		<script src='https://api.callstats.io/static/callstats.min.js'></script>
 		<script src='resources/js/callstats-jssip.min.js'></script>
-		<script src='new-tryit-jssip.js'></script>
+		<script>
+			// Uncomment and fill the SETTINGS object in order to use hardcoded settings
+			// window.SETTINGS =
+			// {
+			// 	display_name        : 'XXXXXX',
+			// 	uri                 : 'sip:xxxxxxxxx@tryit.jssip.net',
+			// 	password            : null,
+			// 	socket              :
+			// 	{
+			// 		uri           : 'wss://tryit.jssip.net:10443',
+			// 		via_transport : 'auto',
+			// 	},
+			// 	registrar_server    : null,
+			// 	contact_uri         : null,
+			// 	authorization_user  : null,
+			// 	instance_id         : null,
+			// 	session_timers      : true,
+			// 	use_preloaded_route : false,
+			// 	callstats           :
+			// 	{
+			// 		enabled   : false,
+			// 		AppID     : null,
+			// 		AppSecret : null
+			// 	}
+			// };
+		</script>
+		<script src='tryit-jssip.js'></script>
 	</head>
 
 	<body>
-		<div id='new-tryit-jssip-container'></div>
-		<div id='new-tryit-jssip-media-query-detector'></div>
+		<div id='tryit-jssip-container'></div>
+		<div id='tryit-jssip-media-query-detector'></div>
 	</body>
 </html>

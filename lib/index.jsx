@@ -29,7 +29,7 @@ function run()
 {
 	logger.debug('run() [environment:%s]', process.env.NODE_ENV);
 
-	let container = document.getElementById('new-tryit-jssip-container');
+	let container = document.getElementById('tryit-jssip-container');
 
 	ReactDOM.render(<App/>, container);
 }

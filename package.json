@@ -1,8 +1,8 @@
 {
-  "name": "new-tryit-jssip",
+  "name": "tryit-jssip",
   "version": "1.0.0-pre1",
   "private": true,
-  "description": "New tryit-jssip app",
+  "description": "New tryit-jssip application",
   "author": "Iñaki Baz Castillo <ibc@aliax.net>",
   "license": "All Rights Reserved",
   "main": "lib/index.jsx",

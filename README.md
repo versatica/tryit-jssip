@@ -27,7 +27,12 @@ $ npm install
 
 The app allows entering settings via an HTTP form in the Login section. However, the developer can hardcode some specific settings (for example the _callstats.io_  settings) by defining a `window.SETTINGS` variable before the `tryit-jssip.js` is loaded.
 
-Check the commented code in the [index.hmtl](./index.html) and fill it as needed.
+Check the commented code in the [index.html](./index.html) and fill it as needed.
+
+
+## Notes
+
+* If you run this web application into your own domain, you will also need to set your own SIP/WebSocket servers. The SIP servers using at the public demo won't accept connections from other origins.
 
 
 ## Author

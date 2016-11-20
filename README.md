@@ -32,7 +32,7 @@ Check the commented code in the [index.html](./index.html) and fill it as needed
 
 ## Notes
 
-* If you run this web application into your own domain, you will also need to set your own SIP/WebSocket servers. The SIP servers using at the public demo won't accept connections from other origins.
+* If you run this web application into your own domain, you will also need to set your own SIP/WebSocket servers. The SIP servers running at the public demo won't accept connections origins other than `https://tryit.jssip.net`.
 
 
 ## Author

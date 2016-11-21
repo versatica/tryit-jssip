@@ -352,6 +352,7 @@ export default class Phone extends React.Component
 
 		let session = this._ua.call(uri,
 			{
+				pcConfig : this.props.settings.pcConfig,
 				mediaConstraints :
 				{
 					audio : true,
@@ -407,7 +408,10 @@ export default class Phone extends React.Component
 
 		let session = this.state.incomingSession;
 
-		session.answer();
+		session.answer(
+			{
+				pcConfig : this.props.settings.pcConfig
+			});
 	}
 
 	handleRejectIncoming()

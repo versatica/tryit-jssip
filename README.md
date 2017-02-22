@@ -15,6 +15,12 @@ Check it online at https://tryit.jssip.net
 $ npm install
 ```
 
+* Globally install the NPM `gulp-cli` package:
+
+```bash
+$ npm install -g gulp-cli
+```
+
 * Build the app (check the [gulpfile](./gulpfile.js) file for details):
   * `gulp prod` generates the app in production/minified mode.
   * `gulp dev` generates the app in development mode.

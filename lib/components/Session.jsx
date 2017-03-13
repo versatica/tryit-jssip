@@ -134,7 +134,11 @@ export default class Session extends React.Component
 
 		// If incoming all we already have the remote stream
 		if (remoteStream)
+		{
+			logger.debug('already have a remote stream');
+
 			this._handleRemoteStream(remoteStream);
+		}
 
 		if (session.isEstablished())
 		{
@@ -290,6 +294,11 @@ export default class Session extends React.Component
 
 	_handleRemoteStream(stream)
 	{
+		logger.debug('_handleRemoteStream() [stream:%o]', stream);
+
+		if (!this._mounted)
+			logger.error('_handleRemoteStream() | component not mounted');
+
 		let remoteVideo = this.refs.remoteVideo;
 
 		// Display remote stream

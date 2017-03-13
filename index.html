@@ -19,6 +19,7 @@
 		</script>
 		<script src='https://api.callstats.io/static/callstats.min.js'></script>
 		<script src='resources/js/callstats-jssip.min.js'></script>
+
 		<script>
 			// Uncomment and fill the SETTINGS object in order to use hardcoded settings
 			//
@@ -43,11 +44,10 @@
 			// 	use_preloaded_route : false,
 			// 	pcConfig            :
 			// 	{
-			// 		iceServers          :
+			// 		rtcpMuxPolicy : 'negotiate',
+			// 		iceServers    :
 			// 		[
-			// 			{
-			// 				urls : [ 'stun:stun.l.google.com:19302' ]
-			// 			}
+			// 			{ urls : [ 'stun:stun.l.google.com:19302' ] }
 			// 		]
 			// 	},
 			// 	callstats           :
@@ -58,6 +58,7 @@
 			// 	}
 			// };
 		</script>
+
 		<script src='tryit-jssip.js'></script>
 	</head>
 

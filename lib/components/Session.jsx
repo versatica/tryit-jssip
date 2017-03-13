@@ -105,6 +105,8 @@ export default class Session extends React.Component
 
 	componentDidMount()
 	{
+		logger.debug('componentDidMount()');
+
 		this._mounted = true;
 
 		let localVideo = this.refs.localVideo;
@@ -261,12 +263,21 @@ export default class Session extends React.Component
 		{
 			logger.debug('peerconnection "addstream" event');
 
+			if (!this._mounted)
+			{
+				logger.error('_handleRemoteStream() | component not mounted');
+
+				return;
+			}
+
 			this._handleRemoteStream(event.stream);
 		});
 	}
 
 	componentWillUnmount()
 	{
+		logger.debug('componentWillUnmount()');
+
 		this._mounted = false;
 		JsSIP.Utils.closeMediaStream(this._localClonedStream);
 	}
@@ -295,9 +306,6 @@ export default class Session extends React.Component
 	_handleRemoteStream(stream)
 	{
 		logger.debug('_handleRemoteStream() [stream:%o]', stream);
-
-		if (!this._mounted)
-			logger.error('_handleRemoteStream() | component not mounted');
 
 		let remoteVideo = this.refs.remoteVideo;
 
@@ -336,7 +344,11 @@ export default class Session extends React.Component
 	_checkRemoteVideo(stream)
 	{
 		if (!this._mounted)
+		{
+			logger.error('_checkRemoteVideo() | component not mounted');
+
 			return;
+		}
 
 		let videoTrack = stream.getVideoTracks()[0];
 

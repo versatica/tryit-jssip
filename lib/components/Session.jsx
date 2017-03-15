@@ -314,17 +314,24 @@ export default class Session extends React.Component
 
 		this._checkRemoteVideo(stream);
 
-		stream.addEventListener('addtrack', () =>
+		stream.addEventListener('addtrack', (event) =>
 		{
+			let track = event.track;
+
 			if (remoteVideo.srcObject !== stream)
 				return;
 
-			logger.debug('remote stream "addtrack" event');
+			logger.debug('remote stream "addtrack" event [track:%o]', track);
 
 			// Refresh remote video
 			remoteVideo.srcObject = stream;
 
 			this._checkRemoteVideo(stream);
+
+			track.addEventListener('ended', () =>
+			{
+				logger.debug('remote track "ended" event [track:%o]', track);
+			});
 		});
 
 		stream.addEventListener('removetrack', () =>

@@ -1,3 +1,4 @@
 /node_modules/
 /out
+/resources/js/callstats.*
 .DS_Store

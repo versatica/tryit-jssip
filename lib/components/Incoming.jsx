@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 import AnswerIcon from 'material-ui/svg-icons/communication/phone';
 import RejectIcon from 'material-ui/svg-icons/communication/call-end';
@@ -67,7 +68,7 @@ export default class Incoming extends React.Component
 
 Incoming.propTypes =
 {
-	session  : React.PropTypes.object.isRequired,
-	onAnswer : React.PropTypes.func.isRequired,
-	onReject : React.PropTypes.func.isRequired
+	session  : PropTypes.object.isRequired,
+	onAnswer : PropTypes.func.isRequired,
+	onReject : PropTypes.func.isRequired
 };

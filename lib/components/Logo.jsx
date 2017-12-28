@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react';
+import PropTypes from 'prop-types';
 
 export default class Logo extends React.Component
 {
@@ -25,5 +26,5 @@ export default class Logo extends React.Component
 
 Logo.propTypes =
 {
-	size : React.PropTypes.string
+	size : PropTypes.string
 };

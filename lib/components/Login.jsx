@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
@@ -205,6 +206,6 @@ export default class Login extends React.Component
 
 Login.propTypes =
 {
-	settings : React.PropTypes.object.isRequired,
-	onLogin  : React.PropTypes.func.isRequired
+	settings : PropTypes.object.isRequired,
+	onLogin  : PropTypes.func.isRequired
 };

@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import HangUpIcon from 'material-ui/svg-icons/communication/call-end';
 import PauseIcon from 'material-ui/svg-icons/av/pause-circle-outline';
 import ResumeIcon from 'material-ui/svg-icons/av/play-circle-outline';
@@ -365,7 +366,7 @@ export default class Session extends React.Component
 
 Session.propTypes =
 {
-	session            : React.PropTypes.object.isRequired,
-	onNotify           : React.PropTypes.func.isRequired,
-	onHideNotification : React.PropTypes.func.isRequired,
+	session            : PropTypes.object.isRequired,
+	onNotify           : PropTypes.func.isRequired,
+	onHideNotification : PropTypes.func.isRequired,
 };

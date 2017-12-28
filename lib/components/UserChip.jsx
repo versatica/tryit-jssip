@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import Chip from 'material-ui/Chip';
 import Avatar from 'material-ui/Avatar';
 import classnames from 'classnames';
@@ -36,8 +37,8 @@ export default class UserChip extends React.Component
 
 UserChip.propTypes =
 {
-	name      : React.PropTypes.string.isRequired,
-	uri       : React.PropTypes.string.isRequired,
-	status    : React.PropTypes.string,
-	fullWidth : React.PropTypes.bool
+	name      : PropTypes.string.isRequired,
+	uri       : PropTypes.string.isRequired,
+	status    : PropTypes.string,
+	fullWidth : PropTypes.bool
 };

@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import classnames from 'classnames';
@@ -112,9 +113,9 @@ export default class Dialer extends React.Component
 
 Dialer.propTypes =
 {
-	settings : React.PropTypes.object.isRequired,
-	status   : React.PropTypes.string.isRequired,
-	busy     : React.PropTypes.bool.isRequired,
-	callme   : React.PropTypes.string,
-	onCall   : React.PropTypes.func.isRequired
+	settings : PropTypes.object.isRequired,
+	status   : PropTypes.string.isRequired,
+	busy     : PropTypes.bool.isRequired,
+	callme   : PropTypes.string,
+	onCall   : PropTypes.func.isRequired
 };

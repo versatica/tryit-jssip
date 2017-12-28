@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
@@ -426,10 +427,10 @@ export default class Phone extends React.Component
 
 Phone.propTypes =
 {
-	settings           : React.PropTypes.object.isRequired,
-	onNotify           : React.PropTypes.func.isRequired,
-	onHideNotification : React.PropTypes.func.isRequired,
-	onShowSnackbar     : React.PropTypes.func.isRequired,
-	onHideSnackbar     : React.PropTypes.func.isRequired,
-	onExit             : React.PropTypes.func.isRequired
+	settings           : PropTypes.object.isRequired,
+	onNotify           : PropTypes.func.isRequired,
+	onHideNotification : PropTypes.func.isRequired,
+	onShowSnackbar     : PropTypes.func.isRequired,
+	onHideSnackbar     : PropTypes.func.isRequired,
+	onExit             : PropTypes.func.isRequired
 };

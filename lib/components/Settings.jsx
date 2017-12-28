@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import {List, ListItem} from 'material-ui/List';
 import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
@@ -337,7 +338,7 @@ export default class Settings extends React.Component
 
 Settings.propTypes =
 {
-	settings : React.PropTypes.object.isRequired,
-	onSubmit : React.PropTypes.func.isRequired,
-	onCancel : React.PropTypes.func.isRequired
+	settings : PropTypes.object.isRequired,
+	onSubmit : PropTypes.func.isRequired,
+	onCancel : PropTypes.func.isRequired
 };

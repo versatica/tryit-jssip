@@ -351,13 +351,14 @@ export default class Phone extends React.Component
 	{
 		logger.debug('handleOutgoingCall() [uri:"%s"]', uri);
 
+    const mediaSettings = this.props.settings.media
 		let session = this._ua.call(uri,
 			{
 				pcConfig : this.props.settings.pcConfig || { iceServers: [] },
 				mediaConstraints :
 				{
-					audio : true,
-					video : true
+          audio: mediaSettings.audioInput ? {deviceId: {exact: mediaSettings.audioInput}} : true,
+					video : mediaSettings.videoInput ? {deviceId: {exact: mediaSettings.videoInput}} : true
 				},
 				rtcOfferConstraints :
 				{

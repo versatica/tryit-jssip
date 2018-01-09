@@ -100,6 +100,7 @@ export default class Phone extends React.Component
 					<div className='content'>
 						{state.session ?
 							<Session
+								settings={props.settings}
 								session={state.session}
 								onNotify={props.onNotify}
 								onHideNotification={props.onHideNotification}
@@ -129,6 +130,7 @@ export default class Phone extends React.Component
 
 		let settings = this.props.settings;
 		let socket = new JsSIP.WebSocketInterface(settings.socket.uri);
+		let mediaSettings = settings.media
 
 		if (settings.socket.via_transport !== 'auto')
 			socket.via_transport = settings.socket.via_transport;
@@ -266,7 +268,7 @@ export default class Phone extends React.Component
 				return;
 			}
 
-			audioPlayer.play('ringing');
+			audioPlayer.play('ringing', mediaSettings.ringing);
 			this.setState({ incomingSession: session });
 
 			session.on('failed', () =>
@@ -352,6 +354,7 @@ export default class Phone extends React.Component
 		logger.debug('handleOutgoingCall() [uri:"%s"]', uri);
 
     const mediaSettings = this.props.settings.media
+
 		let session = this._ua.call(uri,
 			{
 				pcConfig : this.props.settings.pcConfig || { iceServers: [] },
@@ -374,13 +377,13 @@ export default class Phone extends React.Component
 
 		session.on('progress', () =>
 		{
-			audioPlayer.play('ringback');
+			audioPlayer.play('ringback', mediaSettings.audioOutput);
 		});
 
 		session.on('failed', (data) =>
 		{
 			audioPlayer.stop('ringback');
-			audioPlayer.play('rejected');
+			audioPlayer.play('rejected', mediaSettings.audioOutput);
 			this.setState({ session: null });
 
 			this.props.onNotify(
@@ -400,7 +403,7 @@ export default class Phone extends React.Component
 		session.on('accepted', () =>
 		{
 			audioPlayer.stop('ringback');
-			audioPlayer.play('answered');
+			audioPlayer.play('answered', mediaSettings.audioOutput);
 		});
 	}
 

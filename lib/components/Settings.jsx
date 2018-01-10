@@ -33,14 +33,19 @@ export default class Settings extends React.Component
 		if (
 			navigator &&
 			navigator.mediaDevices &&
+			navigator.mediaDevices.getUserMedia &&
 			navigator.mediaDevices.enumerateDevices &&
 			(window.AudioContext || window.webkitAudioContext)
 		) {
 			// TODO: Detect device change
-      navigator.mediaDevices.enumerateDevices().then(devices => {
-				console.log('Loaded devices', devices);
-				this.setState({devices});
-      });
+			navigator.mediaDevices.getUserMedia({audio:true,video:true})
+				.then(() => {
+          navigator.mediaDevices.enumerateDevices().then(devices => {
+            console.log('Loaded devices', devices);
+            this.setState({devices});
+          })
+				});
+
     } else {
 			console.warn('MediaDevices API is missing!');
 		}

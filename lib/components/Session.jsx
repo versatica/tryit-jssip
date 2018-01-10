@@ -111,8 +111,8 @@ export default class Session extends React.Component
 		this._mounted = true;
 
 		let localVideo = this.refs.localVideo;
-		let session = this.props.session
-    let mediaSettings = this.props.settings.media
+		let session = this.props.session;
+    let mediaSettings = this.props.settings.media;
 
 		let peerconnection = session.connection;
 		let localStream = peerconnection.getLocalStreams()[0];
@@ -125,7 +125,7 @@ export default class Session extends React.Component
 			this._localClonedStream = localStream.clone();
 
 			// Display local stream
-			this._attachStreamToElement(localVideo, this._localClonedStream, mediaSettings.audioOutput)
+			this._attachStreamToElement(localVideo, this._localClonedStream, mediaSettings.audioOutput);
 
 			setTimeout(() =>
 			{
@@ -142,7 +142,7 @@ export default class Session extends React.Component
 		{
 			logger.debug('already have a remote stream');
 
-      this._handleRemoteStream(remoteStream)
+      this._handleRemoteStream(remoteStream);
 		}
 
 		if (session.isEstablished())
@@ -311,10 +311,10 @@ export default class Session extends React.Component
 		logger.debug('_handleRemoteStream() [stream:%o]', stream);
 
 		let remoteVideo = this.refs.remoteVideo;
-		let mediaSettings = this.props.settings.media
+		let mediaSettings = this.props.settings.media;
 
 		// Display remote stream
-    this._attachStreamToElement(remoteVideo, stream, mediaSettings.audioOutput)
+    this._attachStreamToElement(remoteVideo, stream, mediaSettings.audioOutput);
 
 		this._checkRemoteVideo(stream);
 
@@ -328,7 +328,7 @@ export default class Session extends React.Component
 			logger.debug('remote stream "addtrack" event [track:%o]', track);
 
 			// Refresh remote video
-      this._attachStreamToElement(remoteVideo, stream, mediaSettings.audioOutput)
+      this._attachStreamToElement(remoteVideo, stream, mediaSettings.audioOutput);
 
 			this._checkRemoteVideo(stream);
 
@@ -346,7 +346,7 @@ export default class Session extends React.Component
 			logger.debug('remote stream "removetrack" event');
 
 			// Refresh remote video
-			this._attachStreamToElement(remoteVideo, stream, mediaSettings.audioOutput)
+			this._attachStreamToElement(remoteVideo, stream, mediaSettings.audioOutput);
 
 			this._checkRemoteVideo(stream);
 		});
@@ -378,14 +378,14 @@ export default class Session extends React.Component
 
     // Redirect audio output to exact device
     if (deviceId && element.setSinkId) {
-    	element.setSinkId(deviceId)
+    	element.setSinkId(deviceId);
     }
 
 		// ReAttach stream
 		element.srcObject = stream;
 
     // Continue on new device
-    element.play()
+    element.play();
 	}
 }
 

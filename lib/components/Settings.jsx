@@ -38,11 +38,11 @@ export default class Settings extends React.Component
 		) {
 			// TODO: Detect device change
       navigator.mediaDevices.enumerateDevices().then(devices => {
-      	console.log('Loaded devices', devices)
-      	this.setState({devices})
-      })
+				console.log('Loaded devices', devices);
+				this.setState({devices});
+      });
     } else {
-			console.warn('MediaDevices API is missing!')
+			console.warn('MediaDevices API is missing!');
 		}
 	}
 
@@ -51,7 +51,7 @@ export default class Settings extends React.Component
 		const {
 			devices,
 			settings
-		} = this.state
+		} = this.state;
 
 		return (
 			<TransitionAppear duration={250}>
@@ -216,19 +216,19 @@ export default class Settings extends React.Component
 
 					<div className='separator'/>
 
-          <div className='item'>
-            <SelectField
-              floatingLabelText='Audio input'
-              value={settings.media.audioInput || null}
-              fullWidth
-              onChange={this.handleChangeAudioInput.bind(this)}
-            >
+					<div className='item'>
+						<SelectField
+							floatingLabelText='Audio input'
+							value={settings.media.audioInput || null}
+							fullWidth
+							onChange={this.handleChangeAudioInput.bind(this)}
+						>
 							<MenuItem />
 							{devices.filter(x => x.kind === 'audioinput').map(x => (
-								<MenuItem value={x.deviceId} primaryText={x.label} />
+								<MenuItem value={x.deviceId} primaryText={x.label} key={x.deviceId} />
 							))}
-            </SelectField>
-          </div>
+						</SelectField>
+					</div>
 
 					<div className='item'>
 						<SelectField
@@ -238,8 +238,8 @@ export default class Settings extends React.Component
 							onChange={this.handleChangeAudioOutput.bind(this)}
 						>
 							<MenuItem />
-              {devices.filter(x => x.kind === 'audiooutput').map(x => (
-								<MenuItem value={x.deviceId} primaryText={x.label} />
+							{devices.filter(x => x.kind === 'audiooutput').map(x => (
+								<MenuItem value={x.deviceId} primaryText={x.label} key={x.deviceId} />
               ))}
 						</SelectField>
 					</div>
@@ -252,8 +252,8 @@ export default class Settings extends React.Component
 							onChange={this.handleChangeAudioOutputRinging.bind(this)}
 						>
 							<MenuItem />
-              {devices.filter(x => x.kind === 'audiooutput').map(x => (
-								<MenuItem value={x.deviceId} primaryText={x.label} />
+							{devices.filter(x => x.kind === 'audiooutput').map(x => (
+								<MenuItem value={x.deviceId} primaryText={x.label} key={x.deviceId} />
               ))}
 						</SelectField>
 					</div>
@@ -266,8 +266,8 @@ export default class Settings extends React.Component
 							onChange={this.handleChangeVideoInput.bind(this)}
 						>
 							<MenuItem />
-              {devices.filter(x => x.kind === 'videoinput').map(x => (
-								<MenuItem value={x.deviceId} primaryText={x.label} />
+							{devices.filter(x => x.kind === 'videoinput').map(x => (
+								<MenuItem value={x.deviceId} primaryText={x.label} key={x.deviceId} />
               ))}
 						</SelectField>
 					</div>
@@ -314,7 +314,7 @@ export default class Settings extends React.Component
 	{
 		let settings = this.state.settings;
 
-		settings.socket.uri = event.target.value;;
+		settings.socket.uri = event.target.value;
 		this.setState({ settings });
 	}
 

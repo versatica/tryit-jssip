@@ -130,7 +130,7 @@ export default class Phone extends React.Component
 
 		let settings = this.props.settings;
 		let socket = new JsSIP.WebSocketInterface(settings.socket.uri);
-		let mediaSettings = settings.media
+		let mediaSettings = settings.media;
 
 		if (settings.socket.via_transport !== 'auto')
 			socket.via_transport = settings.socket.via_transport;
@@ -353,7 +353,7 @@ export default class Phone extends React.Component
 	{
 		logger.debug('handleOutgoingCall() [uri:"%s"]', uri);
 
-    const mediaSettings = this.props.settings.media
+    const mediaSettings = this.props.settings.media;
 
 		let session = this._ua.call(uri,
 			{

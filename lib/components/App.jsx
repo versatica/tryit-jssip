@@ -9,6 +9,7 @@ import Snackbar from 'material-ui/Snackbar';
 import Notifier from './Notifier';
 import Login from './Login';
 import Phone from './Phone';
+import DevicesWatcher from './DevicesWatcher';
 
 const logger = new Logger('App');
 
@@ -70,6 +71,10 @@ export default class App extends React.Component
 			<MuiThemeProvider muiTheme={muiTheme}>
 				<div data-component='App'>
 					<Notifier ref='Notifier'/>
+
+					<DevicesWatcher
+						onNotify={this.handleNotify.bind(this)}
+					/>
 
 					{component}
 

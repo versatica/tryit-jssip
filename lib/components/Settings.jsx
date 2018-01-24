@@ -22,41 +22,28 @@ export default class Settings extends React.Component
 
 		let settings = props.settings;
 
-		this.state =
-		{
+		this.state = {
 			settings : clone(settings, false),
-			devices: []
-		};
+			devices	 : JSON.parse(localStorage.devices)
+		}
 	}
 
-	componentDidMount() {
-		if (
-			navigator &&
-			navigator.mediaDevices &&
-			navigator.mediaDevices.getUserMedia &&
-			navigator.mediaDevices.enumerateDevices &&
-			(window.AudioContext || window.webkitAudioContext)
-		) {
-			// TODO: Detect device change
-			navigator.mediaDevices.getUserMedia({audio:true,video:true})
-				.then(() => {
-          navigator.mediaDevices.enumerateDevices().then(devices => {
-            console.log('Loaded devices', devices);
-            this.setState({devices});
-          })
-				});
+	componentDidMount()
+	{
+		const self = this;
+    window.addEventListener('storage', function(e) {
+      logger.debug('StorageEvent [event:%o]', e);
 
-    } else {
-			console.warn('MediaDevices API is missing!');
-		}
+      if (e.key === 'devices') {
+        self.setState({devices: JSON.parse(e.newValue)});
+      }
+    });
 	}
 
 	render()
 	{
-		const {
-			devices,
-			settings
-		} = this.state;
+		const settings = this.state.settings;
+		const devices = JSON.parse(localStorage.devices);
 
 		return (
 			<TransitionAppear duration={250}>

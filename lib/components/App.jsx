@@ -73,7 +73,9 @@ export default class App extends React.Component
 					<Notifier ref='Notifier'/>
 
 					<DevicesWatcher
+						settings={state.settings}
 						onNotify={this.handleNotify.bind(this)}
+						onSettingsUpdate={this.handleSettingsUpdate.bind(this)}
 					/>
 
 					{component}
@@ -154,6 +156,15 @@ export default class App extends React.Component
 				settings     : settingsManager.get(),
 				showSnackbar : false
 			});
+	}
+
+	handleSettingsUpdate(settings)
+	{
+		logger.debug('handleSettingsUpdate() [settings:%o]', settings)
+
+		settingsManager.set(settings)
+
+		this.setState({ settings })
 	}
 
 	handlePhoneExit()

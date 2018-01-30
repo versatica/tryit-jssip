@@ -100,10 +100,10 @@ export default class Phone extends React.Component
 					<div className='content'>
 						{state.session ?
 							<Session
-								settings={props.settings}
 								session={state.session}
 								onNotify={props.onNotify}
 								onHideNotification={props.onHideNotification}
+								mediaDevices={props.settings.media}
 							/>
 						:
 							null
@@ -130,7 +130,6 @@ export default class Phone extends React.Component
 
 		let settings = this.props.settings;
 		let socket = new JsSIP.WebSocketInterface(settings.socket.uri);
-		let mediaSettings = settings.media;
 
 		if (settings.socket.via_transport !== 'auto')
 			socket.via_transport = settings.socket.via_transport;
@@ -268,7 +267,7 @@ export default class Phone extends React.Component
 				return;
 			}
 
-			audioPlayer.play('ringing', mediaSettings.ringing);
+			audioPlayer.play('ringing', settings.media.audioRinging);
 			this.setState({ incomingSession: session });
 
 			session.on('failed', () =>
@@ -351,17 +350,27 @@ export default class Phone extends React.Component
 
 	handleOutgoingCall(uri)
 	{
-		logger.debug('handleOutgoingCall() [uri:"%s"]', uri);
+		const {
+			settings: {
+				media: {
+					audioInput,
+					audioOutput,
+					videoInput
+				},
+        pcConfig
+			},
+			onNotify
+		} = this.props
 
-    const mediaSettings = this.props.settings.media;
+		logger.debug('handleOutgoingCall() [uri:"%s"]', uri);
 
 		let session = this._ua.call(uri,
 			{
-				pcConfig : this.props.settings.pcConfig || { iceServers: [] },
+				pcConfig : pcConfig || { iceServers: [] },
 				mediaConstraints :
 				{
-          audio: mediaSettings.audioInput ? {deviceId: {exact: mediaSettings.audioInput}} : true,
-					video : mediaSettings.videoInput ? {deviceId: {exact: mediaSettings.videoInput}} : true
+          audio: audioInput ? {deviceId: {exact: audioInput}} : true,
+					video : videoInput ? {deviceId: {exact: videoInput}} : true
 				},
 				rtcOfferConstraints :
 				{
@@ -377,21 +386,20 @@ export default class Phone extends React.Component
 
 		session.on('progress', () =>
 		{
-			audioPlayer.play('ringback', mediaSettings.audioOutput);
+			audioPlayer.play('ringback', audioOutput);
 		});
 
 		session.on('failed', (data) =>
 		{
 			audioPlayer.stop('ringback');
-			audioPlayer.play('rejected', mediaSettings.audioOutput);
+			audioPlayer.play('rejected', audioOutput);
 			this.setState({ session: null });
 
-			this.props.onNotify(
-				{
-					level   : 'error',
-					title   : 'Call failed',
-					message : data.cause
-				});
+			onNotify({
+				level   : 'error',
+				title   : 'Call failed',
+				message : data.cause
+			});
 		});
 
 		session.on('ended', () =>
@@ -403,7 +411,7 @@ export default class Phone extends React.Component
 		session.on('accepted', () =>
 		{
 			audioPlayer.stop('ringback');
-			audioPlayer.play('answered', mediaSettings.audioOutput);
+			audioPlayer.play('answered', audioOutput);
 		});
 	}
 

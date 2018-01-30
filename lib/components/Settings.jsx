@@ -395,6 +395,7 @@ export default class Settings extends React.Component
 		let settings = this.state.settings;
 
 		settings.media.audioInput = value;
+    localStorage.removeItem('audioInputOld')
 
 		this.setState({ settings });
 	}
@@ -404,6 +405,7 @@ export default class Settings extends React.Component
 		let settings = this.state.settings;
 
 		settings.media.audioOutput = value;
+    localStorage.removeItem('audioOutputOld')
 
 		this.setState({ settings });
 	}
@@ -413,6 +415,7 @@ export default class Settings extends React.Component
 		let settings = this.state.settings;
 
 		settings.media.audioRinging = value;
+    localStorage.removeItem('audioRingingOld')
 
 		this.setState({ settings });
 	}
@@ -422,6 +425,7 @@ export default class Settings extends React.Component
 		let settings = this.state.settings;
 
 		settings.media.videoInput = value;
+		localStorage.removeItem('videoInputOld')
 
 		this.setState({ settings });
 	}

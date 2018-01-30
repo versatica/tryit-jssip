@@ -10,6 +10,7 @@ import Notifier from './Notifier';
 import Login from './Login';
 import Phone from './Phone';
 import DevicesWatcher from './DevicesWatcher';
+import clone from 'clone'
 
 const logger = new Logger('App');
 
@@ -73,9 +74,9 @@ export default class App extends React.Component
 					<Notifier ref='Notifier'/>
 
 					<DevicesWatcher
-						settings={state.settings}
+						mediaDevices={state.settings.media}
 						onNotify={this.handleNotify.bind(this)}
-						onSettingsUpdate={this.handleSettingsUpdate.bind(this)}
+						onMediaSettingsChange={this.handleMediaSettingsChange.bind(this)}
 					/>
 
 					{component}
@@ -158,13 +159,19 @@ export default class App extends React.Component
 			});
 	}
 
-	handleSettingsUpdate(settings)
+  handleMediaSettingsChange(key, deviceId)
 	{
-		logger.debug('handleSettingsUpdate() [settings:%o]', settings)
+		const settings = clone(this.state.settings)
 
+		logger.debug('handleMediaSettingsChange() [key:%s] [old:%s] [new:%s]', key, settings.media[key], deviceId)
+
+		// Merge media settings without mutating
+		settings.media[key] = deviceId
 		settingsManager.set(settings)
 
-		this.setState({ settings })
+    this.setState({
+			settings: settingsManager.get()
+		})
 	}
 
 	handlePhoneExit()

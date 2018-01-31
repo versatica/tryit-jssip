@@ -54,8 +54,6 @@ export default class Session extends React.Component
 		else if (!state.remoteHasVideo)
 			noRemoteVideo = <div className='message'>no remote video</div>;
 
-		logger.debug('render() [output:%s]', props.mediaDevices.audioOutput)
-
 		return (
 			<TransitionAppear duration={1000}>
 				<div data-component='Session'>
@@ -109,28 +107,25 @@ export default class Session extends React.Component
 
   componentDidUpdate(prevProps) {
 		if (prevProps.mediaDevices.audioOutput !== this.props.mediaDevices.audioOutput) {
-      logger.debug('componentDidUpdate() audioOutput [old:%s] [device:%s]', prevProps.mediaDevices.audioOutput, this.props.mediaDevices.audioOutput)
-      this._attachStreamToElement(this.refs.remoteVideo, this.props.mediaDevices.audioOutput, this._remoteStream)
+      logger.debug('componentDidUpdate() audioOutput [old:%s] [device:%s]', prevProps.mediaDevices.audioOutput, this.props.mediaDevices.audioOutput);
+      this._attachStreamToElement(this.refs.remoteVideo, this.props.mediaDevices.audioOutput, this._remoteStream);
 		}
 
 		if (prevProps.mediaDevices.audioInput !== this.props.mediaDevices.audioInput) {
-      logger.debug('componentDidUpdate() audioInput [old:%s] [device:%s]', prevProps.mediaDevices.audioInput, this.props.mediaDevices.audioInput)
-      this._replaceLocalMedia()
+      logger.debug('componentDidUpdate() audioInput [old:%s] [device:%s]', prevProps.mediaDevices.audioInput, this.props.mediaDevices.audioInput);
+      this._replaceLocalMedia();
 		}
 	}
 
 	componentDidMount()
 	{
-		logger.debug('componentDidMount()', this.props.mediaDevices.audioOutput);
-
 		this._mounted = true;
 
 		let localVideo = this.refs.localVideo;
 		const {
       session,
       mediaDevices: {
-        audioOutput,
-        audioInput
+        audioOutput
       }
 		} = this.props;
 
@@ -330,11 +325,11 @@ export default class Session extends React.Component
 	{
 		logger.debug('_handleRemoteStream() [stream:%o]', stream);
 
-		this._remoteStream = stream
+		this._remoteStream = stream;
 
 		let remoteVideo = this.refs.remoteVideo;
 
-		const audioOutput = this.props.mediaDevices.audioOutput
+		const audioOutput = this.props.mediaDevices.audioOutput;
 
 		// Display remote stream
     this._attachStreamToElement(remoteVideo, audioOutput, stream);
@@ -396,8 +391,6 @@ export default class Session extends React.Component
 	 * @param {String} deviceId - DeviceId to use for audio output
    */
 	_attachStreamToElement(element, deviceId, stream) {
-    console.log('Re-attach stream', element, deviceId, stream)
-
 		/*
 			1. Pause stream before change
 			2. Redirect to device
@@ -408,10 +401,10 @@ export default class Session extends React.Component
     element.pause();
 		element.setSinkId(deviceId)
 			.then(() => logger.debug('Stream directed to device [device:%s]', deviceId))
-			.catch(err => logger.error(err, deviceId))
+			.catch(err => logger.error(err, deviceId));
 
 		if (element.srcObject !== stream) {
-    	element.srcObject = stream
+      element.srcObject = stream;
 		}
 
     element.play();
@@ -424,7 +417,7 @@ export default class Session extends React.Component
 		const {
 			session,
 			mediaDevices
-		} = this.props
+		} = this.props;
 
 		/*
 			1. Get new stream with proper constrains
@@ -439,13 +432,13 @@ export default class Session extends React.Component
     })
       .then(streamNew => {
 				session.connection.getLocalStreams().forEach(stream => {
-          // Shouldn't we end tracks manually?
-					session.connection.removeStream(stream)
-				})
+          stream.getTracks().forEach(track => track.stop());
+					session.connection.removeStream(stream);
+				});
 
-        return session.connection.addStream(streamNew)
-  		})
-			.then(() => session.renegotiate({ useUpdate: true }))
+        return session.connection.addStream(streamNew);
+			})
+			.then(() => session.renegotiate({ useUpdate: true }));
 	}
 }
 

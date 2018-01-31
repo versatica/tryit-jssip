@@ -360,7 +360,7 @@ export default class Phone extends React.Component
         pcConfig
 			},
 			onNotify
-		} = this.props
+		} = this.props;
 
 		logger.debug('handleOutgoingCall() [uri:"%s"]', uri);
 

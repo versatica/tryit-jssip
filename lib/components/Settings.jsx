@@ -25,7 +25,7 @@ export default class Settings extends React.Component
 		this.state = {
 			settings : clone(settings, false),
 			devices	 : JSON.parse(localStorage.devices)
-		}
+		};
 	}
 
 	componentDidMount()
@@ -395,7 +395,7 @@ export default class Settings extends React.Component
 		let settings = this.state.settings;
 
 		settings.media.audioInput = value;
-    localStorage.removeItem('audioInputOld')
+    localStorage.removeItem('audioInputOld');
 
 		this.setState({ settings });
 	}
@@ -405,7 +405,7 @@ export default class Settings extends React.Component
 		let settings = this.state.settings;
 
 		settings.media.audioOutput = value;
-    localStorage.removeItem('audioOutputOld')
+    localStorage.removeItem('audioOutputOld');
 
 		this.setState({ settings });
 	}
@@ -415,7 +415,7 @@ export default class Settings extends React.Component
 		let settings = this.state.settings;
 
 		settings.media.audioRinging = value;
-    localStorage.removeItem('audioRingingOld')
+    localStorage.removeItem('audioRingingOld');
 
 		this.setState({ settings });
 	}
@@ -425,7 +425,7 @@ export default class Settings extends React.Component
 		let settings = this.state.settings;
 
 		settings.media.videoInput = value;
-		localStorage.removeItem('videoInputOld')
+		localStorage.removeItem('videoInputOld');
 
 		this.setState({ settings });
 	}

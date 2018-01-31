@@ -6,6 +6,9 @@
   "author": "Iñaki Baz Castillo <ibc@aliax.net>",
   "license": "MIT",
   "main": "lib/index.jsx",
+  "scripts": {
+    "test": "eslint ./lib/**/*.js ./lib/**/*.jsx"
+  },
   "dependencies": {
     "babel-runtime": "^6.26.0",
     "classnames": "^2.2.5",
@@ -36,9 +39,13 @@
     "browserify": "^14.5.0",
     "del": "^3.0.0",
     "envify": "^4.1.0",
-    "eslint": "^4.14.0",
+    "eslint": "^4.16.0",
+    "eslint-config-standard": "^11.0.0-beta.0",
     "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-react": "7.5.1",
+    "eslint-plugin-standard": "^3.0.1",
     "gulp": "git://github.com/gulpjs/gulp.git#4.0",
     "gulp-css-base64": "^1.3.4",
     "gulp-eslint": "^4.0.0",

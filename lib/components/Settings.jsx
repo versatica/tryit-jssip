@@ -215,7 +215,6 @@ export default class Settings extends React.Component
 							fullWidth
 							onChange={this.handleChangeAudioInput.bind(this)}
 						>
-							<MenuItem />
 							{devices.filter(x => x.kind === 'audioinput').map(x => (
 								<MenuItem value={x.deviceId} primaryText={x.label} key={x.deviceId} />
 							))}
@@ -229,7 +228,6 @@ export default class Settings extends React.Component
 							fullWidth
 							onChange={this.handleChangeAudioOutput.bind(this)}
 						>
-							<MenuItem />
 							{devices.filter(x => x.kind === 'audiooutput').map(x => (
 								<MenuItem value={x.deviceId} primaryText={x.label} key={x.deviceId} />
               ))}
@@ -243,7 +241,6 @@ export default class Settings extends React.Component
 							fullWidth
 							onChange={this.handleChangeAudioOutputRinging.bind(this)}
 						>
-							<MenuItem />
 							{devices.filter(x => x.kind === 'audiooutput').map(x => (
 								<MenuItem value={x.deviceId} primaryText={x.label} key={x.deviceId} />
               ))}
@@ -257,7 +254,6 @@ export default class Settings extends React.Component
 							fullWidth
 							onChange={this.handleChangeVideoInput.bind(this)}
 						>
-							<MenuItem />
 							{devices.filter(x => x.kind === 'videoinput').map(x => (
 								<MenuItem value={x.deviceId} primaryText={x.label} key={x.deviceId} />
               ))}

@@ -112,6 +112,8 @@ export default class Session extends React.Component
 
 		let localVideo = this.refs.localVideo;
 		let session = this.props.session;
+    let mediaSettings = this.props.settings.media;
+
 		let peerconnection = session.connection;
 		let localStream = peerconnection.getLocalStreams()[0];
 		let remoteStream = peerconnection.getRemoteStreams()[0];
@@ -123,7 +125,7 @@ export default class Session extends React.Component
 			this._localClonedStream = localStream.clone();
 
 			// Display local stream
-			localVideo.srcObject = this._localClonedStream;
+			this._attachStreamToElement(localVideo, this._localClonedStream, mediaSettings.audioOutput);
 
 			setTimeout(() =>
 			{
@@ -140,7 +142,7 @@ export default class Session extends React.Component
 		{
 			logger.debug('already have a remote stream');
 
-			this._handleRemoteStream(remoteStream);
+      this._handleRemoteStream(remoteStream);
 		}
 
 		if (session.isEstablished())
@@ -309,9 +311,10 @@ export default class Session extends React.Component
 		logger.debug('_handleRemoteStream() [stream:%o]', stream);
 
 		let remoteVideo = this.refs.remoteVideo;
+		let mediaSettings = this.props.settings.media;
 
 		// Display remote stream
-		remoteVideo.srcObject = stream;
+    this._attachStreamToElement(remoteVideo, stream, mediaSettings.audioOutput);
 
 		this._checkRemoteVideo(stream);
 
@@ -325,7 +328,7 @@ export default class Session extends React.Component
 			logger.debug('remote stream "addtrack" event [track:%o]', track);
 
 			// Refresh remote video
-			remoteVideo.srcObject = stream;
+      this._attachStreamToElement(remoteVideo, stream, mediaSettings.audioOutput);
 
 			this._checkRemoteVideo(stream);
 
@@ -343,7 +346,7 @@ export default class Session extends React.Component
 			logger.debug('remote stream "removetrack" event');
 
 			// Refresh remote video
-			remoteVideo.srcObject = stream;
+			this._attachStreamToElement(remoteVideo, stream, mediaSettings.audioOutput);
 
 			this._checkRemoteVideo(stream);
 		});
@@ -362,11 +365,34 @@ export default class Session extends React.Component
 
 		this.setState({ remoteHasVideo: !!videoTrack });
 	}
+
+  /**
+   * Re/Attach stream to element with deviceId
+   * @param {HTMLMediaElement} element - Target audio/video element
+   * @param {Stream} stream - Stream to attach
+	 * @param {String} deviceId - DeviceId to use for audio output
+   */
+	_attachStreamToElement(element, stream, deviceId) {
+    // Pause stream before device change
+    element.pause();
+
+    // Redirect audio output to exact device
+    if (deviceId && element.setSinkId) {
+    	element.setSinkId(deviceId);
+    }
+
+		// ReAttach stream
+		element.srcObject = stream;
+
+    // Continue on new device
+    element.play();
+	}
 }
 
 Session.propTypes =
 {
+  settings					 : PropTypes.object.isRequired,
 	session            : PropTypes.object.isRequired,
 	onNotify           : PropTypes.func.isRequired,
-	onHideNotification : PropTypes.func.isRequired,
+	onHideNotification : PropTypes.func.isRequired
 };

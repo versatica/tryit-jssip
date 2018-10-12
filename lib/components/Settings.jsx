@@ -24,13 +24,39 @@ export default class Settings extends React.Component
 
 		this.state =
 		{
-			settings : clone(settings, false)
+			settings : clone(settings, false),
+			devices: []
 		};
+	}
+
+	componentDidMount() {
+		if (
+			navigator &&
+			navigator.mediaDevices &&
+			navigator.mediaDevices.getUserMedia &&
+			navigator.mediaDevices.enumerateDevices &&
+			(window.AudioContext || window.webkitAudioContext)
+		) {
+			// TODO: Detect device change
+			navigator.mediaDevices.getUserMedia({audio:true,video:true})
+				.then(() => {
+          navigator.mediaDevices.enumerateDevices().then(devices => {
+            console.log('Loaded devices', devices);
+            this.setState({devices});
+          })
+				});
+
+    } else {
+			console.warn('MediaDevices API is missing!');
+		}
 	}
 
 	render()
 	{
-		let settings = this.state.settings;
+		const {
+			devices,
+			settings
+		} = this.state;
 
 		return (
 			<TransitionAppear duration={250}>
@@ -195,6 +221,64 @@ export default class Settings extends React.Component
 
 					<div className='separator'/>
 
+					<div className='item'>
+						<SelectField
+							floatingLabelText='Audio input'
+							value={settings.media.audioInput || null}
+							fullWidth
+							onChange={this.handleChangeAudioInput.bind(this)}
+						>
+							<MenuItem />
+							{devices.filter(x => x.kind === 'audioinput').map(x => (
+								<MenuItem value={x.deviceId} primaryText={x.label} key={x.deviceId} />
+							))}
+						</SelectField>
+					</div>
+
+					<div className='item'>
+						<SelectField
+							floatingLabelText='Audio output'
+							value={settings.media.audioOutput || null}
+							fullWidth
+							onChange={this.handleChangeAudioOutput.bind(this)}
+						>
+							<MenuItem />
+							{devices.filter(x => x.kind === 'audiooutput').map(x => (
+								<MenuItem value={x.deviceId} primaryText={x.label} key={x.deviceId} />
+              ))}
+						</SelectField>
+					</div>
+
+					<div className='item'>
+						<SelectField
+							floatingLabelText='Audio ringing'
+							value={settings.media.audioRinging || null}
+							fullWidth
+							onChange={this.handleChangeAudioOutputRinging.bind(this)}
+						>
+							<MenuItem />
+							{devices.filter(x => x.kind === 'audiooutput').map(x => (
+								<MenuItem value={x.deviceId} primaryText={x.label} key={x.deviceId} />
+              ))}
+						</SelectField>
+					</div>
+
+					<div className='item'>
+						<SelectField
+							floatingLabelText='Video input'
+							value={settings.media.videoInput || null}
+							fullWidth
+							onChange={this.handleChangeVideoInput.bind(this)}
+						>
+							<MenuItem />
+							{devices.filter(x => x.kind === 'videoinput').map(x => (
+								<MenuItem value={x.deviceId} primaryText={x.label} key={x.deviceId} />
+              ))}
+						</SelectField>
+					</div>
+
+					<div className='separator'/>
+
 					<div className='buttons'>
 						<RaisedButton
 							label='Cancel'
@@ -235,7 +319,7 @@ export default class Settings extends React.Component
 	{
 		let settings = this.state.settings;
 
-		settings.socket.uri = event.target.value;;
+		settings.socket.uri = event.target.value;
 		this.setState({ settings });
 	}
 
@@ -316,6 +400,42 @@ export default class Settings extends React.Component
 		let settings = this.state.settings;
 
 		settings.callstats.AppSecret = event.target.value;
+		this.setState({ settings });
+	}
+
+  handleChangeAudioInput(event, key, value)
+	{
+		let settings = this.state.settings;
+
+		settings.media.audioInput = value;
+
+		this.setState({ settings });
+	}
+
+  handleChangeAudioOutput(event, key, value)
+	{
+		let settings = this.state.settings;
+
+		settings.media.audioOutput = value;
+
+		this.setState({ settings });
+	}
+
+  handleChangeAudioOutputRinging(event, key, value)
+	{
+		let settings = this.state.settings;
+
+		settings.media.audioRinging = value;
+
+		this.setState({ settings });
+	}
+
+  handleChangeVideoInput(event, key, value)
+	{
+		let settings = this.state.settings;
+
+		settings.media.videoInput = value;
+
 		this.setState({ settings });
 	}
 

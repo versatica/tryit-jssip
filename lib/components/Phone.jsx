@@ -103,6 +103,7 @@ export default class Phone extends React.Component
 								session={state.session}
 								onNotify={props.onNotify}
 								onHideNotification={props.onHideNotification}
+								mediaDevices={props.settings.media}
 							/>
 						:
 							null
@@ -266,7 +267,7 @@ export default class Phone extends React.Component
 				return;
 			}
 
-			audioPlayer.play('ringing');
+			audioPlayer.play('ringing', settings.media.audioRinging);
 			this.setState({ incomingSession: session });
 
 			session.on('failed', () =>
@@ -349,15 +350,27 @@ export default class Phone extends React.Component
 
 	handleOutgoingCall(uri)
 	{
+		const {
+			settings: {
+				media: {
+					audioInput,
+					audioOutput,
+					videoInput
+				},
+        pcConfig
+			},
+			onNotify
+		} = this.props;
+
 		logger.debug('handleOutgoingCall() [uri:"%s"]', uri);
 
 		let session = this._ua.call(uri,
 			{
-				pcConfig : this.props.settings.pcConfig || { iceServers: [] },
+				pcConfig : pcConfig || { iceServers: [] },
 				mediaConstraints :
 				{
-					audio : true,
-					video : true
+          audio: audioInput ? {deviceId: {exact: audioInput}} : true,
+					video : videoInput ? {deviceId: {exact: videoInput}} : true
 				},
 				rtcOfferConstraints :
 				{
@@ -373,21 +386,20 @@ export default class Phone extends React.Component
 
 		session.on('progress', () =>
 		{
-			audioPlayer.play('ringback');
+			audioPlayer.play('ringback', audioOutput);
 		});
 
 		session.on('failed', (data) =>
 		{
 			audioPlayer.stop('ringback');
-			audioPlayer.play('rejected');
+			audioPlayer.play('rejected', audioOutput);
 			this.setState({ session: null });
 
-			this.props.onNotify(
-				{
-					level   : 'error',
-					title   : 'Call failed',
-					message : data.cause
-				});
+			onNotify({
+				level   : 'error',
+				title   : 'Call failed',
+				message : data.cause
+			});
 		});
 
 		session.on('ended', () =>
@@ -399,7 +411,7 @@ export default class Phone extends React.Component
 		session.on('accepted', () =>
 		{
 			audioPlayer.stop('ringback');
-			audioPlayer.play('answered');
+			audioPlayer.play('answered', audioOutput);
 		});
 	}
 

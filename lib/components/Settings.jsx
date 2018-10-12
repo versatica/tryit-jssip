@@ -22,15 +22,28 @@ export default class Settings extends React.Component
 
 		let settings = props.settings;
 
-		this.state =
-		{
-			settings : clone(settings, false)
+		this.state = {
+			settings : clone(settings, false),
+			devices	 : JSON.parse(localStorage.devices)
 		};
+	}
+
+	componentDidMount()
+	{
+		const self = this;
+    window.addEventListener('storage', function(e) {
+      logger.debug('StorageEvent [event:%o]', e);
+
+      if (e.key === 'devices') {
+        self.setState({devices: JSON.parse(e.newValue)});
+      }
+    });
 	}
 
 	render()
 	{
-		let settings = this.state.settings;
+		const settings = this.state.settings;
+		const devices = JSON.parse(localStorage.devices);
 
 		return (
 			<TransitionAppear duration={250}>
@@ -195,6 +208,60 @@ export default class Settings extends React.Component
 
 					<div className='separator'/>
 
+					<div className='item'>
+						<SelectField
+							floatingLabelText='Audio input'
+							value={settings.media.audioInput || null}
+							fullWidth
+							onChange={this.handleChangeAudioInput.bind(this)}
+						>
+							{devices.filter(x => x.kind === 'audioinput').map(x => (
+								<MenuItem value={x.deviceId} primaryText={x.label} key={x.deviceId} />
+							))}
+						</SelectField>
+					</div>
+
+					<div className='item'>
+						<SelectField
+							floatingLabelText='Audio output'
+							value={settings.media.audioOutput || null}
+							fullWidth
+							onChange={this.handleChangeAudioOutput.bind(this)}
+						>
+							{devices.filter(x => x.kind === 'audiooutput').map(x => (
+								<MenuItem value={x.deviceId} primaryText={x.label} key={x.deviceId} />
+              ))}
+						</SelectField>
+					</div>
+
+					<div className='item'>
+						<SelectField
+							floatingLabelText='Audio ringing'
+							value={settings.media.audioRinging || null}
+							fullWidth
+							onChange={this.handleChangeAudioOutputRinging.bind(this)}
+						>
+							{devices.filter(x => x.kind === 'audiooutput').map(x => (
+								<MenuItem value={x.deviceId} primaryText={x.label} key={x.deviceId} />
+              ))}
+						</SelectField>
+					</div>
+
+					<div className='item'>
+						<SelectField
+							floatingLabelText='Video input'
+							value={settings.media.videoInput || null}
+							fullWidth
+							onChange={this.handleChangeVideoInput.bind(this)}
+						>
+							{devices.filter(x => x.kind === 'videoinput').map(x => (
+								<MenuItem value={x.deviceId} primaryText={x.label} key={x.deviceId} />
+              ))}
+						</SelectField>
+					</div>
+
+					<div className='separator'/>
+
 					<div className='buttons'>
 						<RaisedButton
 							label='Cancel'
@@ -235,7 +302,7 @@ export default class Settings extends React.Component
 	{
 		let settings = this.state.settings;
 
-		settings.socket.uri = event.target.value;;
+		settings.socket.uri = event.target.value;
 		this.setState({ settings });
 	}
 
@@ -316,6 +383,46 @@ export default class Settings extends React.Component
 		let settings = this.state.settings;
 
 		settings.callstats.AppSecret = event.target.value;
+		this.setState({ settings });
+	}
+
+  handleChangeAudioInput(event, key, value)
+	{
+		let settings = this.state.settings;
+
+		settings.media.audioInput = value;
+    localStorage.removeItem('audioInputOld');
+
+		this.setState({ settings });
+	}
+
+  handleChangeAudioOutput(event, key, value)
+	{
+		let settings = this.state.settings;
+
+		settings.media.audioOutput = value;
+    localStorage.removeItem('audioOutputOld');
+
+		this.setState({ settings });
+	}
+
+  handleChangeAudioOutputRinging(event, key, value)
+	{
+		let settings = this.state.settings;
+
+		settings.media.audioRinging = value;
+    localStorage.removeItem('audioRingingOld');
+
+		this.setState({ settings });
+	}
+
+  handleChangeVideoInput(event, key, value)
+	{
+		let settings = this.state.settings;
+
+		settings.media.videoInput = value;
+		localStorage.removeItem('videoInputOld');
+
 		this.setState({ settings });
 	}
 

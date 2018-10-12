@@ -32,6 +32,7 @@ export default class Session extends React.Component
 		this._mounted = false;
 		// Local cloned stream
 		this._localClonedStream = null;
+		this._remoteStream = null;
 	}
 
 	render()
@@ -104,14 +105,30 @@ export default class Session extends React.Component
 		);
 	}
 
+  componentDidUpdate(prevProps) {
+		if (prevProps.mediaDevices.audioOutput !== this.props.mediaDevices.audioOutput) {
+      logger.debug('componentDidUpdate() audioOutput [old:%s] [device:%s]', prevProps.mediaDevices.audioOutput, this.props.mediaDevices.audioOutput);
+      this._attachStreamToElement(this.refs.remoteVideo, this.props.mediaDevices.audioOutput, this._remoteStream);
+		}
+
+		if (prevProps.mediaDevices.audioInput !== this.props.mediaDevices.audioInput) {
+      logger.debug('componentDidUpdate() audioInput [old:%s] [device:%s]', prevProps.mediaDevices.audioInput, this.props.mediaDevices.audioInput);
+      this._replaceLocalMedia();
+		}
+	}
+
 	componentDidMount()
 	{
-		logger.debug('componentDidMount()');
-
 		this._mounted = true;
 
 		let localVideo = this.refs.localVideo;
-		let session = this.props.session;
+		const {
+      session,
+      mediaDevices: {
+        audioOutput
+      }
+		} = this.props;
+
 		let peerconnection = session.connection;
 		let localStream = peerconnection.getLocalStreams()[0];
 		let remoteStream = peerconnection.getRemoteStreams()[0];
@@ -123,7 +140,7 @@ export default class Session extends React.Component
 			this._localClonedStream = localStream.clone();
 
 			// Display local stream
-			localVideo.srcObject = this._localClonedStream;
+			this._attachStreamToElement(localVideo, audioOutput, this._localClonedStream);
 
 			setTimeout(() =>
 			{
@@ -140,7 +157,7 @@ export default class Session extends React.Component
 		{
 			logger.debug('already have a remote stream');
 
-			this._handleRemoteStream(remoteStream);
+      this._handleRemoteStream(remoteStream);
 		}
 
 		if (session.isEstablished())
@@ -308,10 +325,14 @@ export default class Session extends React.Component
 	{
 		logger.debug('_handleRemoteStream() [stream:%o]', stream);
 
+		this._remoteStream = stream;
+
 		let remoteVideo = this.refs.remoteVideo;
 
+		const audioOutput = this.props.mediaDevices.audioOutput;
+
 		// Display remote stream
-		remoteVideo.srcObject = stream;
+    this._attachStreamToElement(remoteVideo, audioOutput, stream);
 
 		this._checkRemoteVideo(stream);
 
@@ -325,7 +346,7 @@ export default class Session extends React.Component
 			logger.debug('remote stream "addtrack" event [track:%o]', track);
 
 			// Refresh remote video
-			remoteVideo.srcObject = stream;
+      this._attachStreamToElement(remoteVideo, audioOutput, stream);
 
 			this._checkRemoteVideo(stream);
 
@@ -343,7 +364,7 @@ export default class Session extends React.Component
 			logger.debug('remote stream "removetrack" event');
 
 			// Refresh remote video
-			remoteVideo.srcObject = stream;
+			this._attachStreamToElement(remoteVideo, audioOutput, stream);
 
 			this._checkRemoteVideo(stream);
 		});
@@ -362,11 +383,70 @@ export default class Session extends React.Component
 
 		this.setState({ remoteHasVideo: !!videoTrack });
 	}
+
+  /**
+   * Re/Attach stream to element with deviceId
+   * @param {HTMLMediaElement} element - Target audio/video element
+   * @param {Stream} stream - Stream to attach
+	 * @param {String} deviceId - DeviceId to use for audio output
+   */
+	_attachStreamToElement(element, deviceId, stream) {
+		/*
+			1. Pause stream before change
+			2. Redirect to device
+			3. Replace stream source if needed
+			4. Play stream
+		 */
+
+    element.pause();
+		element.setSinkId(deviceId)
+			.then(() => logger.debug('Stream directed to device [device:%s]', deviceId))
+			.catch(err => logger.error(err, deviceId));
+
+		if (element.srcObject !== stream) {
+      element.srcObject = stream;
+		}
+
+    element.play();
+	}
+
+  /**
+	 * Update local input media
+   */
+	_replaceLocalMedia() {
+		const {
+			session,
+			mediaDevices
+		} = this.props;
+
+		/*
+			1. Get new stream with proper constrains
+			2. Remove current local streams
+			3. Add new stream to connection
+			4. Send update
+		 */
+
+    navigator.mediaDevices.getUserMedia({
+      audio: mediaDevices.audioInput ? {deviceId: {exact: mediaDevices.audioInput}} : true,
+      video: mediaDevices.videoInput ? {deviceId: {exact: mediaDevices.videoInput}} : true
+    })
+      .then(streamNew => {
+				session.connection.getLocalStreams().forEach(stream => {
+          stream.getTracks().forEach(track => track.stop());
+					session.connection.removeStream(stream);
+				});
+
+        return session.connection.addStream(streamNew);
+			})
+			.then(() => session.renegotiate({ useUpdate: true }));
+	}
 }
 
 Session.propTypes =
 {
-	session            : PropTypes.object.isRequired,
-	onNotify           : PropTypes.func.isRequired,
 	onHideNotification : PropTypes.func.isRequired,
+	onNotify           : PropTypes.func.isRequired,
+	audioOutput				 : PropTypes.string,
+	session            : PropTypes.object.isRequired,
+  mediaDevices			 : PropTypes.object.isRequired
 };

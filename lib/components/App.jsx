@@ -9,6 +9,8 @@ import Snackbar from 'material-ui/Snackbar';
 import Notifier from './Notifier';
 import Login from './Login';
 import Phone from './Phone';
+import DevicesWatcher from './DevicesWatcher';
+import clone from 'clone';
 
 const logger = new Logger('App');
 
@@ -70,6 +72,12 @@ export default class App extends React.Component
 			<MuiThemeProvider muiTheme={muiTheme}>
 				<div data-component='App'>
 					<Notifier ref='Notifier'/>
+
+					<DevicesWatcher
+						mediaDevices={state.settings.media}
+						onNotify={this.handleNotify.bind(this)}
+						onMediaSettingsChange={this.handleMediaSettingsChange.bind(this)}
+					/>
 
 					{component}
 
@@ -149,6 +157,21 @@ export default class App extends React.Component
 				settings     : settingsManager.get(),
 				showSnackbar : false
 			});
+	}
+
+  handleMediaSettingsChange(key, deviceId)
+	{
+		const settings = clone(this.state.settings);
+
+		logger.debug('handleMediaSettingsChange() [key:%s] [old:%s] [new:%s]', key, settings.media[key], deviceId);
+
+		// Merge media settings without mutating
+		settings.media[key] = deviceId;
+		settingsManager.set(settings);
+
+    this.setState({
+			settings: settingsManager.get()
+		});
 	}
 
 	handlePhoneExit()

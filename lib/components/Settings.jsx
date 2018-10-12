@@ -235,7 +235,7 @@ export default class Settings extends React.Component
 	{
 		let settings = this.state.settings;
 
-		settings.socket.uri = event.target.value;;
+		settings.socket.uri = event.target.value;
 		this.setState({ settings });
 	}
 

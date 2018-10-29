@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -45,9 +43,9 @@ export default class Phone extends React.Component
 
 	render()
 	{
-		let state = this.state;
-		let props = this.props;
-		let invitationLink = `${this._u.protocol}//${this._u.host}${this._u.pathname}?callme=${props.settings.uri}`;
+		const state = this.state;
+		const props = this.props;
+		const invitationLink = `${this._u.protocol}//${this._u.host}${this._u.pathname}?callme=${props.settings.uri}`;
 
 		return (
 			<TransitionAppear duration={1000}>
@@ -91,32 +89,28 @@ export default class Phone extends React.Component
 						<Dialer
 							settings={props.settings}
 							status={state.status}
-							busy={!!state.session || !!state.incomingSession}
+							busy={Boolean(state.session || state.incomingSession)}
 							callme={this._u.query.callme}
 							onCall={this.handleOutgoingCall.bind(this)}
 						/>
 					</header>
 
 					<div className='content'>
-						{state.session ?
+						<If condition={state.session}>
 							<Session
 								session={state.session}
 								onNotify={props.onNotify}
 								onHideNotification={props.onHideNotification}
 							/>
-						:
-							null
-						}
+						</If>
 
-						{state.incomingSession ?
+						<If condition={state.incomingSession}>
 							<Incoming
 								session={state.incomingSession}
 								onAnswer={this.handleAnswerIncoming.bind(this)}
 								onReject={this.handleRejectIncoming.bind(this)}
 							/>
-						:
-							null
-						}
+						</If>
 					</div>
 				</div>
 			</TransitionAppear>
@@ -127,26 +121,26 @@ export default class Phone extends React.Component
 	{
 		this._mounted = true;
 
-		let settings = this.props.settings;
-		let socket = new JsSIP.WebSocketInterface(settings.socket.uri);
+		const settings = this.props.settings;
+		const socket = new JsSIP.WebSocketInterface(settings.socket.uri);
 
-		if (settings.socket.via_transport !== 'auto')
-			socket.via_transport = settings.socket.via_transport;
+		if (settings.socket['via_transport'] !== 'auto')
+			socket['via_transport'] = settings.socket['via_transport'];
 
 		try
 		{
 			this._ua = new JsSIP.UA(
 				{
-					uri                 : settings.uri,
-					password            : settings.password,
-					display_name        : settings.display_name,
-					sockets             : [ socket ],
-					registrar_server    : settings.registrar_server,
-					contact_uri         : settings.contact_uri,
-					authorization_user  : settings.authorization_user,
-					instance_id         : settings.instance_id,
-					session_timers      : settings.session_timers,
-					use_preloaded_route : settings.use_preloaded_route
+					uri                   : settings.uri,
+					password              : settings.password,
+					'display_name'        : settings.display_name,
+					sockets               : [ socket ],
+					'registrar_server'    : settings.registrar_server,
+					'contact_uri'         : settings.contact_uri,
+					'authorization_user'  : settings.authorization_user,
+					'instance_id'         : settings.instance_id,
+					'session_timers'      : settings.session_timers,
+					'use_preloaded_route' : settings.use_preloaded_route
 				});
 		}
 		catch (error)
@@ -159,9 +153,9 @@ export default class Phone extends React.Component
 				});
 
 			this.props.onExit();
+
 			return;
 		}
-
 
 		this._ua.on('connecting', () =>
 		{
@@ -250,17 +244,18 @@ export default class Phone extends React.Component
 
 			logger.debug('UA "newRTCSession" event');
 
-			let state = this.state;
-			let session = data.session;
+			const state = this.state;
+			const session = data.session;
 
 			// Avoid if busy or other incoming
-			if (state.session || state.incomingSession) {
+			if (state.session || state.incomingSession)
+			{
 				logger.debug('incoming call replied with 486 "Busy Here"');
 
 				session.terminate(
 					{
-						status_code   : 486,
-						reason_phrase : 'Busy Here'
+						'status_code'   : 486,
+						'reason_phrase' : 'Busy Here'
 					});
 
 				return;
@@ -325,7 +320,7 @@ export default class Phone extends React.Component
 	{
 		logger.debug('handleMenuCopyInvitationLink()');
 
-		let message = 'Invitation link copied to the clipboard';
+		const message = 'Invitation link copied to the clipboard';
 
 		this.props.onShowSnackbar(message, 3000);
 	}
@@ -334,7 +329,7 @@ export default class Phone extends React.Component
 	{
 		logger.debug('handleMenuCopyUri()');
 
-		let message = 'Your SIP URI copied to the clipboard';
+		const message = 'Your SIP URI copied to the clipboard';
 
 		this.props.onShowSnackbar(message, 3000);
 	}
@@ -351,9 +346,9 @@ export default class Phone extends React.Component
 	{
 		logger.debug('handleOutgoingCall() [uri:"%s"]', uri);
 
-		let session = this._ua.call(uri,
+		const session = this._ua.call(uri,
 			{
-				pcConfig : this.props.settings.pcConfig || { iceServers: [] },
+				pcConfig         : this.props.settings.pcConfig || { iceServers: [] },
 				mediaConstraints :
 				{
 					audio : true,
@@ -407,7 +402,7 @@ export default class Phone extends React.Component
 	{
 		logger.debug('handleAnswerIncoming()');
 
-		let session = this.state.incomingSession;
+		const session = this.state.incomingSession;
 
 		session.answer(
 			{
@@ -419,7 +414,7 @@ export default class Phone extends React.Component
 	{
 		logger.debug('handleRejectIncoming()');
 
-		let session = this.state.incomingSession;
+		const session = this.state.incomingSession;
 
 		session.terminate();
 	}

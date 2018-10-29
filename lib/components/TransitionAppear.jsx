@@ -1,10 +1,28 @@
-'use strict';
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 const DEFAULT_DURATION = 1000;
+
+class FakeTransitionWrapper extends React.Component
+{
+	constructor(props)
+	{
+		super(props);
+	}
+
+	render()
+	{
+		const children = React.Children.toArray(this.props.children);
+
+		return children[0] || null;
+	}
+}
+
+FakeTransitionWrapper.propTypes =
+{
+	children : PropTypes.any
+};
 
 export default class TransitionAppear extends React.Component
 {
@@ -15,14 +33,14 @@ export default class TransitionAppear extends React.Component
 
 	render()
 	{
-		let props = this.props;
-		let duration = props.hasOwnProperty('duration') ? props.duration : DEFAULT_DURATION;
+		const props = this.props;
+		const duration = props.hasOwnProperty('duration') ? props.duration : DEFAULT_DURATION;
 
 		return (
 			<ReactCSSTransitionGroup
 				component={FakeTransitionWrapper}
 				transitionName='transition'
-				transitionAppear={!!duration}
+				transitionAppear={Boolean(duration)}
 				transitionAppearTimeout={duration}
 				transitionEnter={false}
 				transitionLeave={false}
@@ -37,24 +55,4 @@ TransitionAppear.propTypes =
 {
 	children : PropTypes.any,
 	duration : PropTypes.number
-};
-
-class FakeTransitionWrapper extends React.Component
-{
-	constructor(props)
-	{
-		super(props);
-	}
-
-	render()
-	{
-		let children = React.Children.toArray(this.props.children);
-
-		return children[0] || null;
-	}
-}
-
-FakeTransitionWrapper.propTypes =
-{
-	children : PropTypes.any
 };

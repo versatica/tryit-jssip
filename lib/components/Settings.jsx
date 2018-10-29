@@ -1,8 +1,6 @@
-'use strict';
-
 import React from 'react';
 import PropTypes from 'prop-types';
-import {List, ListItem} from 'material-ui/List';
+import { List, ListItem } from 'material-ui/List';
 import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
 import SelectField from 'material-ui/SelectField';
@@ -20,7 +18,7 @@ export default class Settings extends React.Component
 	{
 		super(props);
 
-		let settings = props.settings;
+		const settings = props.settings;
 
 		this.state =
 		{
@@ -30,7 +28,7 @@ export default class Settings extends React.Component
 
 	render()
 	{
-		let settings = this.state.settings;
+		const settings = this.state.settings;
 
 		return (
 			<TransitionAppear duration={250}>
@@ -199,14 +197,14 @@ export default class Settings extends React.Component
 						<RaisedButton
 							label='Cancel'
 							secondary
-							style={{ display : 'block' }}
+							style={{ display: 'block' }}
 							onClick={this.handleCancel.bind(this)}
 						/>
 
 						<RaisedButton
 							label='OK'
 							primary
-							style={{ display : 'block' }}
+							style={{ display: 'block' }}
 							onClick={this.handleSubmit.bind(this)}
 						/>
 					</div>
@@ -217,7 +215,7 @@ export default class Settings extends React.Component
 
 	handleChangeSipUri(event)
 	{
-		let settings = this.state.settings;
+		const settings = this.state.settings;
 
 		settings.uri = event.target.value;
 		this.setState({ settings });
@@ -225,7 +223,7 @@ export default class Settings extends React.Component
 
 	handleChangePassword(event)
 	{
-		let settings = this.state.settings;
+		const settings = this.state.settings;
 
 		settings.password = event.target.value;
 		this.setState({ settings });
@@ -233,79 +231,79 @@ export default class Settings extends React.Component
 
 	handleChangeWebSocketUri(event)
 	{
-		let settings = this.state.settings;
+		const settings = this.state.settings;
 
-		settings.socket.uri = event.target.value;;
+		settings.socket.uri = event.target.value;
 		this.setState({ settings });
 	}
 
 	handleChangeViaTransport(event, key, value)
 	{
-		let settings = this.state.settings;
+		const settings = this.state.settings;
 
-		settings.socket.via_transport = value;
+		settings.socket['via_transport'] = value;
 		this.setState({ settings });
 	}
 
 	handleChangeRegistrarServer(event)
 	{
-		let settings = this.state.settings;
+		const settings = this.state.settings;
 
-		settings.registrar_server = event.target.value;
+		settings['registrar_server'] = event.target.value;
 		this.setState({ settings });
 	}
 
 	handleChangeContactUri(event)
 	{
-		let settings = this.state.settings;
+		const settings = this.state.settings;
 
-		settings.contact_uri = event.target.value;
+		settings['contact_uri'] = event.target.value;
 		this.setState({ settings });
 	}
 
 	handleChangeAuthorizationUser(event)
 	{
-		let settings = this.state.settings;
+		const settings = this.state.settings;
 
-		settings.authorization_user = event.target.value;
+		settings['authorization_user'] = event.target.value;
 		this.setState({ settings });
 	}
 
 	handleChangeInstanceId(event)
 	{
-		let settings = this.state.settings;
+		const settings = this.state.settings;
 
-		settings.instance_id = event.target.value;
+		settings['instance_id'] = event.target.value;
 		this.setState({ settings });
 	}
 
 	handleToogleSessionTimers()
 	{
-		let settings = this.state.settings;
+		const settings = this.state.settings;
 
-		settings.session_timers = !settings.session_timers;
+		settings['session_timers'] = !settings.session_timers;
 		this.setState({ settings });
 	}
 
 	handleToogleUsePreloadedRoute()
 	{
-		let settings = this.state.settings;
+		const settings = this.state.settings;
 
-		settings.use_preloaded_route = !settings.use_preloaded_route;
+		settings['use_preloaded_route'] = !settings.use_preloaded_route;
 		this.setState({ settings });
 	}
 
 	handleToogleCallstatsEnabled()
 	{
-		let settings = this.state.settings;
+		const settings = this.state.settings;
 
-		settings.callstats.enabled = !settings.callstats.enabled;
+		settings['callstats.enabled'] = !settings.callstats.enabled;
 		this.setState({ settings });
 	}
 
 	handleChangeCallstatsAppID(event)
 	{
-		let settings = this.state.settings;
+		const settings = this.state.settings;
 
 		settings.callstats.AppID = event.target.value;
 		this.setState({ settings });
@@ -313,7 +311,7 @@ export default class Settings extends React.Component
 
 	handleChangeCallstatsAppSecret(event)
 	{
-		let settings = this.state.settings;
+		const settings = this.state.settings;
 
 		settings.callstats.AppSecret = event.target.value;
 		this.setState({ settings });
@@ -323,7 +321,7 @@ export default class Settings extends React.Component
 	{
 		logger.debug('handleSubmit()');
 
-		let settings = this.state.settings;
+		const settings = this.state.settings;
 
 		this.props.onSubmit(settings);
 	}

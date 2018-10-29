@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import HangUpIcon from 'material-ui/svg-icons/communication/call-end';
@@ -36,8 +34,8 @@ export default class Session extends React.Component
 
 	render()
 	{
-		let state = this.state;
-		let props = this.props;
+		const state = this.state;
+		const props = this.props;
 		let noRemoteVideo;
 
 		if (props.session.isInProgress() && !state.ringing)
@@ -69,13 +67,11 @@ export default class Session extends React.Component
 						autoPlay
 					/>
 
-					{noRemoteVideo ?
+					<If condition={noRemoteVideo}>
 						<div className='no-remote-video-info'>
 							{noRemoteVideo}
 						</div>
-					:
-						null
-					}
+					</If>
 
 					<div className='controls-container'>
 						<div className='controls'>
@@ -84,19 +80,24 @@ export default class Session extends React.Component
 								color={'#fff'}
 								onClick={this.handleHangUp.bind(this)}
 							/>
-							{!state.localHold ?
-								<PauseIcon
-									className='control'
-									color={'#fff'}
-									onClick={this.handleHold.bind(this)}
-								/>
-							:
-								<ResumeIcon
-									className='control'
-									color={'#fff'}
-									onClick={this.handleResume.bind(this)}
-								/>
-							}
+
+							<Choose>
+								<When condition={!state.localHold}>
+									<PauseIcon
+										className='control'
+										color={'#fff'}
+										onClick={this.handleHold.bind(this)}
+									/>
+								</When>
+
+								<Otherwise>
+									<ResumeIcon
+										className='control'
+										color={'#fff'}
+										onClick={this.handleResume.bind(this)}
+									/>
+								</Otherwise>
+							</Choose>
 						</div>
 					</div>
 				</div>
@@ -110,11 +111,11 @@ export default class Session extends React.Component
 
 		this._mounted = true;
 
-		let localVideo = this.refs.localVideo;
-		let session = this.props.session;
-		let peerconnection = session.connection;
-		let localStream = peerconnection.getLocalStreams()[0];
-		let remoteStream = peerconnection.getRemoteStreams()[0];
+		const localVideo = this.refs.localVideo;
+		const session = this.props.session;
+		const peerconnection = session.connection;
+		const localStream = peerconnection.getLocalStreams()[0];
+		const remoteStream = peerconnection.getRemoteStreams()[0];
 
 		// Handle local stream
 		if (localStream)
@@ -225,7 +226,7 @@ export default class Session extends React.Component
 			if (!this._mounted)
 				return;
 
-			let originator = data.originator;
+			const originator = data.originator;
 
 			logger.debug('session "hold" event [originator:%s]', originator);
 
@@ -245,7 +246,7 @@ export default class Session extends React.Component
 			if (!this._mounted)
 				return;
 
-			let originator = data.originator;
+			const originator = data.originator;
 
 			logger.debug('session "unhold" event [originator:%s]', originator);
 
@@ -308,7 +309,7 @@ export default class Session extends React.Component
 	{
 		logger.debug('_handleRemoteStream() [stream:%o]', stream);
 
-		let remoteVideo = this.refs.remoteVideo;
+		const remoteVideo = this.refs.remoteVideo;
 
 		// Display remote stream
 		remoteVideo.srcObject = stream;
@@ -317,7 +318,7 @@ export default class Session extends React.Component
 
 		stream.addEventListener('addtrack', (event) =>
 		{
-			let track = event.track;
+			const track = event.track;
 
 			if (remoteVideo.srcObject !== stream)
 				return;
@@ -358,9 +359,9 @@ export default class Session extends React.Component
 			return;
 		}
 
-		let videoTrack = stream.getVideoTracks()[0];
+		const videoTrack = stream.getVideoTracks()[0];
 
-		this.setState({ remoteHasVideo: !!videoTrack });
+		this.setState({ remoteHasVideo: Boolean(videoTrack) });
 	}
 }
 
@@ -368,5 +369,5 @@ Session.propTypes =
 {
 	session            : PropTypes.object.isRequired,
 	onNotify           : PropTypes.func.isRequired,
-	onHideNotification : PropTypes.func.isRequired,
+	onHideNotification : PropTypes.func.isRequired
 };

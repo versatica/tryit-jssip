@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import TextField from 'material-ui/TextField';
@@ -34,8 +32,8 @@ export default class Login extends React.Component
 
 	render()
 	{
-		let state = this.state;
-		let settings = state.settings;
+		const state = this.state;
+		const settings = state.settings;
 
 		return (
 			<TransitionAppear>
@@ -83,7 +81,7 @@ export default class Login extends React.Component
 						/>
 					</div>
 
-					{state.showSettings ?
+					<If condition={state.showSettings}>
 						<div className='settings-container'>
 							<Settings
 								settings={settings}
@@ -91,9 +89,7 @@ export default class Login extends React.Component
 								onCancel={this.handleSettingsCancel.bind(this)}
 							/>
 						</div>
-					:
-						null
-					}
+					</If>
 				</div>
 			</TransitionAppear>
 		);
@@ -101,11 +97,11 @@ export default class Login extends React.Component
 
 	handleChangeName(event)
 	{
-		let settings = this.state.settings;
-		let errors = this.state.errors;
-		let name = event.target.value;
+		const settings = this.state.settings;
+		const errors = this.state.errors;
+		const name = event.target.value;
 
-		settings.display_name = name;
+		settings['display_name'] = name;
 		errors.name = null;
 
 		this.setState({ settings, errors });
@@ -158,7 +154,7 @@ export default class Login extends React.Component
 
 	_checkCanPlay()
 	{
-		let state = this.state;
+		const state = this.state;
 
 		if (state.settings.display_name && !state.showSettings)
 			return true;
@@ -170,9 +166,9 @@ export default class Login extends React.Component
 	{
 		logger.debug('_checkForm()');
 
-		let state = this.state;
-		let settings = state.settings;
-		let errors = state.errors;
+		const state = this.state;
+		const settings = state.settings;
+		const errors = state.errors;
 		let ok = true;
 
 		// Check name
@@ -187,14 +183,16 @@ export default class Login extends React.Component
 		if (!ok)
 		{
 			this.setState({ errors });
+
 			return;
 		}
 
 		// If no SIP URI is set, set a random one
 		if (!settings.uri)
 		{
-			let username = `${settings.display_name.toLowerCase().replace(/[^a-zA-Z0-9]/g, '')}_${randomString({ length: 6 }).toLowerCase()}`;
-			let domain = settingsManager.getDefaultDomain();
+			const username =
+				`${settings.display_name.toLowerCase().replace(/[^a-zA-Z0-9]/g, '')}_${randomString({ length: 6 }).toLowerCase()}`;
+			const domain = settingsManager.getDefaultDomain();
 
 			settings.uri = `sip:${username}@${domain}`;
 		}

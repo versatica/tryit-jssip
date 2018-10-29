@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import Chip from 'material-ui/Chip';
@@ -15,20 +13,18 @@ export default class UserChip extends React.Component
 
 	render()
 	{
-		let name = this.props.name;
-		let uri = this.props.uri;
-		let status = this.props.status;
-		let fullWidth = this.props.fullWidth;
+		const name = this.props.name;
+		const uri = this.props.uri;
+		const status = this.props.status;
+		const fullWidth = this.props.fullWidth;
 
 		return (
 			<Chip data-component='UserChip' className={classnames({ 'full-width': fullWidth })}>
-				{status ?
+				<If condition={status}>
 					<Avatar
 						className={classnames('status', status)}
 					/>
-				:
-					null
-				}
+				</If>
 				{name} <span className='uri'>&lt;{uri}&gt;</span>
 			</Chip>
 		);

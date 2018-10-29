@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Logger from '../Logger';
@@ -34,7 +32,7 @@ export default class App extends React.Component
 
 	render()
 	{
-		let state = this.state;
+		const state = this.state;
 		let component;
 
 		switch (state.step)

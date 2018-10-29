@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -20,9 +18,9 @@ export default class Incoming extends React.Component
 
 	render()
 	{
-		let session = this.props.session;
-		let name = session.remote_identity.display_name;
-		let uri = session.remote_identity.uri.toString();
+		const session = this.props.session;
+		const name = session.remote_identity.display_name;
+		const uri = session.remote_identity.uri.toString();
 
 		return (
 			<TransitionAppear duration={1000}>

@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import TextField from 'material-ui/TextField';
@@ -25,9 +23,9 @@ export default class Dialer extends React.Component
 
 	render()
 	{
-		let state = this.state;
-		let props = this.props;
-		let settings = props.settings;
+		const state = this.state;
+		const props = this.props;
+		const settings = props.settings;
 
 		return (
 			<div data-component='Dialer'>
@@ -92,7 +90,7 @@ export default class Dialer extends React.Component
 
 	_doCall()
 	{
-		let uri = this.state.uri;
+		const uri = this.state.uri;
 
 		logger.debug('_doCall() [uri:"%s"]', uri);
 
@@ -102,7 +100,7 @@ export default class Dialer extends React.Component
 
 	_canCall()
 	{
-		let props = this.props;
+		const props = this.props;
 
 		return (
 			!props.busy &&

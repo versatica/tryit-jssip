@@ -24,7 +24,7 @@ const gulp = require('gulp');
 const gulpif = require('gulp-if');
 const gutil = require('gulp-util');
 const plumber = require('gulp-plumber');
-const touch = require('gulp-touch');
+const touch = require('gulp-touch-cmd');
 const rename = require('gulp-rename');
 const header = require('gulp-header');
 const browserify = require('browserify');
@@ -38,8 +38,8 @@ const mkdirp = require('mkdirp');
 const ncp = require('ncp');
 const eslint = require('gulp-eslint');
 const stylus = require('gulp-stylus');
+const autoprefixer = require('autoprefixer-stylus');
 const cssBase64 = require('gulp-css-base64');
-const nib = require('nib');
 const browserSync = require('browser-sync');
 
 const PKG = require('./package.json');
@@ -151,14 +151,15 @@ gulp.task('css', () =>
 		.pipe(plumber())
 		.pipe(stylus(
 			{
-				use      : nib(),
-				compress : true
+				use      : [ autoprefixer() ],
+				compress : process.env.NODE_ENV === 'production'
 			}))
 		.on('error', logError)
 		.pipe(cssBase64(
 			{
 				baseDir           : '.',
-				maxWeightResource : 50000 // So ttf fonts are not included, nice
+				maxWeightResource : 50000, // So ttf fonts are not included, nice
+				extensionsAllowed : [ '.svg', '.png', '.jpg' ]
 			}))
 		.pipe(rename(`${PKG.name}.css`))
 		.pipe(gulp.dest(OUTPUT_DIR))

@@ -160,7 +160,7 @@ export default class Settings extends React.Component
 							secondaryTextLines={1}
 							rightToggle={
 								<Toggle
-									defaultToggled={settings.callstats_enabled}
+									defaultToggled={settings.callstats.enabled}
 									onToggle={this.handleToogleCallstatsEnabled.bind(this)}
 								/>
 							}
@@ -173,7 +173,7 @@ export default class Settings extends React.Component
 						<TextField
 							floatingLabelText='AppID'
 							value={settings.callstats.AppID || ''}
-							disabled={!settings.callstats_enabled}
+							disabled={!settings.callstats.enabled}
 							floatingLabelFixed
 							fullWidth
 							onChange={this.handleChangeCallstatsAppID.bind(this)}
@@ -184,7 +184,7 @@ export default class Settings extends React.Component
 						<TextField
 							floatingLabelText='AppSecret'
 							value={settings.callstats.AppSecret || ''}
-							disabled={!settings.callstats_enabled}
+							disabled={!settings.callstats.enabled}
 							floatingLabelFixed
 							fullWidth
 							onChange={this.handleChangeCallstatsAppSecret.bind(this)}
@@ -297,7 +297,7 @@ export default class Settings extends React.Component
 	{
 		const settings = this.state.settings;
 
-		settings['callstats_enabled'] = !settings.callstats_enabled;
+		settings['callstats']['enabled'] = !settings.callstats.enabled;
 		this.setState({ settings });
 	}
 

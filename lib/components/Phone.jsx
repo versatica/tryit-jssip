@@ -15,6 +15,9 @@ import Dialer from './Dialer';
 import Session from './Session';
 import Incoming from './Incoming';
 
+// TODO: For testing.
+window.jssip = JsSIP;
+
 const callstatsjssip = window.callstatsjssip;
 
 const logger = new Logger('Phone');
@@ -142,6 +145,9 @@ export default class Phone extends React.Component
 					'session_timers'      : settings.session_timers,
 					'use_preloaded_route' : settings.use_preloaded_route
 				});
+
+			// TODO: For testing.
+			window.UA = this._ua;
 		}
 		catch (error)
 		{
@@ -238,6 +244,9 @@ export default class Phone extends React.Component
 		{
 			if (!this._mounted)
 				return;
+
+			// TODO: For testing.
+			window.SESSION = data.session;
 
 			if (data.originator === 'local')
 				return;

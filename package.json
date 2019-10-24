@@ -13,7 +13,7 @@
     "debug": "^4.1.1",
     "deepmerge": "^2.2.1",
     "domready": "^1.0.8",
-    "jssip": "^3.3.6",
+    "jssip": "^3.3.11",
     "material-ui": "^0.20.2",
     "prop-types": "^15.7.2",
     "random-string": "^0.2.0",

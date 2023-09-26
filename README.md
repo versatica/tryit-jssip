@@ -12,13 +12,13 @@ Check it online at https://tryit.jssip.net
 * Install dependencies:
 
 ```bash
-$ npm install
+ npm install
 ```
 
 * Globally install the NPM `gulp-cli` package:
 
 ```bash
-$ npm install -g gulp-cli
+ npm install -g gulp-cli
 ```
 
 * Build the app (check the [gulpfile](./gulpfile.js) file for details):

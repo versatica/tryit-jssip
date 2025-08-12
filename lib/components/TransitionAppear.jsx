@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { CSSTransition } from 'react-transition-group';
 
 const DEFAULT_DURATION = 1000;
 
@@ -37,16 +37,16 @@ export default class TransitionAppear extends React.Component
 		const duration = props.hasOwnProperty('duration') ? props.duration : DEFAULT_DURATION;
 
 		return (
-			<ReactCSSTransitionGroup
+			<CSSTransition
 				component={FakeTransitionWrapper}
-				transitionName='transition'
-				transitionAppear={Boolean(duration)}
-				transitionAppearTimeout={duration}
-				transitionEnter={false}
-				transitionLeave={false}
+				classNames='transition'
+				appear={Boolean(duration)}
+				timeout={duration}
+				mountOnEnter={false}
+				unmountOnExit={false}
 			>
 				{this.props.children}
-			</ReactCSSTransitionGroup>
+			</CSSTransition>
 		);
 	}
 }
